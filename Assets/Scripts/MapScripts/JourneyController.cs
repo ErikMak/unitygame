@@ -284,19 +284,27 @@ public sealed class JourneyController : MonoBehaviour
         }
 
         state = JourneyControllerState.Moving;
+        gameState.SetJourneyProgress(0f);
         Vector3 originalScale = playerUnit.localScale;
         float totalDistance = CalculatePathDistance(waypoints);
+        float traveledDistance = 0f;
 
         if (totalDistance <= Mathf.Epsilon)
         {
             SetPlayerPosition(waypoints[^1].position);
+            gameState.SetJourneyProgress(1f);
         }
         else
         {
             float movementSpeed = totalDistance / duration;
             for (int i = 1; i < waypoints.Count; i++)
             {
-                yield return MoveToWaypoint(waypoints[i], movementSpeed);
+                Vector3 start = WithPlayerHeight(playerUnit.position);
+                Vector3 target = WithPlayerHeight(waypoints[i].position);
+                float segmentDistance = Vector3.Distance(start, target);
+                yield return MoveToWaypoint(waypoints[i], movementSpeed, traveledDistance, totalDistance);
+                traveledDistance += segmentDistance;
+                gameState.SetJourneyProgress(Mathf.Clamp01(traveledDistance / totalDistance));
                 playerUnit.localScale = originalScale;
             }
         }
@@ -308,10 +316,11 @@ public sealed class JourneyController : MonoBehaviour
         }
 
         yield return WaitUnscaled(NextStepDelaySeconds);
+        gameState.SetJourneyProgress(1f);
         yield return ProcessCurrentStep();
     }
 
-    private IEnumerator MoveToWaypoint(Transform waypoint, float movementSpeed)
+    private IEnumerator MoveToWaypoint(Transform waypoint, float movementSpeed, float completedDistance, float totalDistance)
     {
         while (playerUnit != null && waypoint != null)
         {
@@ -327,7 +336,9 @@ public sealed class JourneyController : MonoBehaviour
 
             RotatePlayerTowards(flatDirection);
             Vector3 nextPosition = Vector3.MoveTowards(currentPosition, targetPosition, movementSpeed * Time.unscaledDeltaTime);
+            completedDistance += Vector3.Distance(currentPosition, nextPosition);
             SetPlayerPosition(nextPosition);
+            gameState.SetJourneyProgress(totalDistance > 0f ? completedDistance / totalDistance : 1f);
             yield return null;
         }
     }

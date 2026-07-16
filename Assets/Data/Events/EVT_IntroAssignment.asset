@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1291028752882514c8304715b8be03f9, type: 3}
+  m_Name: EVT_IntroAssignment
+  m_EditorClassIdentifier: Assembly-CSharp::EventDefinition
+  eventId: intro_assignment
+  title: "\u041F\u043E\u0440\u0443\u0447\u0435\u043D\u0438\u0435 \u043D\u0430\u0441\u0442\u0430\u0432\u043D\u0438\u043A\u0430"
+  description: "\u041F\u0435\u0440\u0435\u0434 \u0432\u044B\u0445\u043E\u0434\u043E\u043C
+    \u0438\u0437 \u0423\u0441\u0442\u044C\u044F \u041D\u0435\u0432\u044B \u043D\u0430\u0441\u0442\u0430\u0432\u043D\u0438\u043A
+    \u043F\u043E\u0440\u0443\u0447\u0430\u0435\u0442 \u0432\u044B\u0431\u0440\u0430\u0442\u044C
+    \u043F\u0435\u0440\u0432\u044B\u0439 \u0433\u0440\u0443\u0437 \u0434\u043B\u044F
+    \u043F\u0443\u0442\u0438 \u043A \u041D\u043E\u0432\u0433\u043E\u0440\u043E\u0434\u0443
+    \u0438 \u0422\u043E\u0440\u0436\u043A\u0443."
+  illustration: {fileID: 21300000, guid: 9e04bd81ecdd4f649ba721333c7a6e6d, type: 3}
+  choices:
+  - choiceId: take_cloth
+    buttonText: "\u0412\u0437\u044F\u0442\u044C \u0442\u044E\u043A \u0441\u0443\u043A\u043D\u0430"
+    resultText: "\u0412 \u0442\u0440\u044E\u043C \u0443\u043B\u043E\u0436\u0435\u043D\u043E
+      \u0441\u0443\u043A\u043D\u043E."
+    effect:
+      goldDelta: 0
+      daysDelta: 0
+      continueJourney: 1
+      finishEvent: 1
+      itemChanges:
+      - item: {fileID: 11400000, guid: b28455e18f7b1914ca4818e1ae2e7044, type: 2}
+        quantityDelta: 2
+      removeAnyCargoQuantity: 0
+    isAvailable: 1
+    requiredGold: 0
+    requiredItem: {fileID: 0}
+    requiredItemQuantity: 0
+  - choiceId: take_salt
+    buttonText: "\u0412\u0437\u044F\u0442\u044C \u043C\u0435\u0448\u043A\u0438 \u0441\u043E\u043B\u0438"
+    resultText: "\u0421\u043E\u043B\u044C \u0443\u043B\u043E\u0436\u0435\u043D\u0430
+      \u0432 \u0442\u0440\u044E\u043C."
+    effect:
+      goldDelta: 0
+      daysDelta: 0
+      continueJourney: 1
+      finishEvent: 1
+      itemChanges:
+      - item: {fileID: 11400000, guid: 3b53e255c91a51b40aef0217618f07e4, type: 2}
+        quantityDelta: 2
+      removeAnyCargoQuantity: 0
+    isAvailable: 1
+    requiredGold: 0
+    requiredItem: {fileID: 0}
+    requiredItemQuantity: 0
+  - choiceId: take_fur
+    buttonText: "\u0412\u0437\u044F\u0442\u044C \u043F\u0443\u0448\u043D\u0438\u043D\u0443"
+    resultText: "\u041F\u0443\u0448\u043D\u0438\u043D\u0430 \u043F\u0440\u0438\u043D\u044F\u0442\u0430
+      \u043D\u0430 \u0431\u043E\u0440\u0442."
+    effect:
+      goldDelta: 0
+      daysDelta: 0
+      continueJourney: 1
+      finishEvent: 1
+      itemChanges:
+      - item: {fileID: 11400000, guid: a01a1fc0d1ec32e47ba4ceee2ecdbf60, type: 2}
+        quantityDelta: 1
+      removeAnyCargoQuantity: 0
+    isAvailable: 1
+    requiredGold: 0
+    requiredItem: {fileID: 0}
+    requiredItemQuantity: 0
+  - choiceId: take_wax
+    buttonText: "\u0412\u0437\u044F\u0442\u044C \u0432\u043E\u0441\u043A"
+    resultText: "\u0412\u043E\u0441\u043A \u043F\u0440\u0438\u043D\u044F\u0442 \u043D\u0430
+      \u0431\u043E\u0440\u0442."
+    effect:
+      goldDelta: 0
+      daysDelta: 0
+      continueJourney: 1
+      finishEvent: 1
+      itemChanges:
+      - item: {fileID: 11400000, guid: aa38f6ecba620764392e9ccf45f70f70, type: 2}
+        quantityDelta: 1
+      removeAnyCargoQuantity: 0
+    isAvailable: 1
+    requiredGold: 0
+    requiredItem: {fileID: 0}
+    requiredItemQuantity: 0
+  isOneShot: 1
+  showResultAfterChoice: 1

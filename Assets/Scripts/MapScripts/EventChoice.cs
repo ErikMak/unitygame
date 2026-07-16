@@ -10,6 +10,8 @@ public sealed class EventChoice
     [SerializeField] private EventEffect effect = new();
     [SerializeField] private bool isAvailable = true;
     [SerializeField, Min(0)] private int requiredGold;
+    [SerializeField] private GoodItem requiredItem;
+    [SerializeField, Min(0)] private int requiredItemQuantity;
 
     public string ChoiceId
     {
@@ -43,9 +45,22 @@ public sealed class EventChoice
         set => requiredGold = Mathf.Max(0, value);
     }
 
+    public GoodItem RequiredItem
+    {
+        get => requiredItem;
+        set => requiredItem = value;
+    }
+
+    public int RequiredItemQuantity
+    {
+        get => requiredItemQuantity;
+        set => requiredItemQuantity = Mathf.Max(0, value);
+    }
+
     public void Validate()
     {
         requiredGold = Mathf.Max(0, requiredGold);
+        requiredItemQuantity = Mathf.Max(0, requiredItemQuantity);
         effect ??= new EventEffect();
         effect.ClampValues();
     }

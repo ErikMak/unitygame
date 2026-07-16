@@ -11,7 +11,7 @@ public sealed class EventChoiceButtonUI : MonoBehaviour
     private EventChoice choice;
     private Action<EventChoice> onSelected;
 
-    public void Initialize(EventChoice eventChoice, int currentGold, Action<EventChoice> selectedCallback)
+    public void Initialize(EventChoice eventChoice, GameState gameState, Action<EventChoice> selectedCallback)
     {
         choice = eventChoice;
         onSelected = selectedCallback;
@@ -20,8 +20,10 @@ public sealed class EventChoiceButtonUI : MonoBehaviour
         buttonText ??= GetComponentInChildren<TMP_Text>(true);
 
         bool hasChoice = choice != null;
+        int currentGold = gameState != null ? gameState.Gold : 0;
         bool enoughGold = hasChoice && currentGold >= choice.RequiredGold;
-        bool isEnabled = hasChoice && choice.IsAvailable && enoughGold;
+        bool hasRequiredItem = !hasChoice || choice.RequiredItem == null || (gameState != null && gameState.HasItem(choice.RequiredItem, choice.RequiredItemQuantity));
+        bool isEnabled = hasChoice && choice.IsAvailable && enoughGold && hasRequiredItem;
 
         if (buttonText != null)
         {
@@ -36,6 +38,11 @@ public sealed class EventChoiceButtonUI : MonoBehaviour
             else if (!enoughGold)
             {
                 buttonText.text = $"{choice.ButtonText}\nНедостаточно золота: требуется {choice.RequiredGold}";
+            }
+            else if (!hasRequiredItem)
+            {
+                string itemName = choice.RequiredItem != null ? choice.RequiredItem.DisplayName : "товар";
+                buttonText.text = $"{choice.ButtonText}\nТребуется: {itemName} x{choice.RequiredItemQuantity}";
             }
             else
             {

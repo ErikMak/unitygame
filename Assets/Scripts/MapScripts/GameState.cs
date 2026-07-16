@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class GameState : MonoBehaviour
 {
     public static GameState Instance { get; private set; }
 
     [SerializeField, Min(0)] private int startingGold = 100;
+    [SerializeField] private GameRulesDefinition rules;
     [SerializeField] private JourneyRouteDefinition route;
+    [SerializeField] private InventoryModel inventory = new();
 
     private int gold;
     private int currentJourneyStepIndex;
@@ -17,7 +20,14 @@ public class GameState : MonoBehaviour
     [SerializeField] private List<string> completedEventIds = new();
     private readonly HashSet<string> completedEventLookup = new();
 
-    public int StartingGold => startingGold;
+    public event Action<int> OnGoldChanged;
+    public event Action<int> OnDaysChanged;
+    public event Action OnInventoryChanged;
+    public event Action<LocationId> OnLocationChanged;
+    public event Action<int, JourneyStep> OnJourneyStepChanged;
+    public event Action<float> OnJourneyProgressChanged;
+
+    public int StartingGold => rules != null ? rules.StartingGold : startingGold;
     public int Gold => gold;
     public int CurrentJourneyStepIndex => currentJourneyStepIndex;
     public int DaysElapsed => daysElapsed;
@@ -25,6 +35,12 @@ public class GameState : MonoBehaviour
     public bool IsNewGameInitialized => isNewGameInitialized;
     public bool IsGameFinished => isGameFinished;
     public JourneyRouteDefinition Route => route;
+    public GameRulesDefinition Rules => rules;
+    public InventoryModel Inventory => inventory;
+    public int InventorySlotCount => rules != null ? rules.InventorySlotCount : 8;
+    public int MaxStackPerSlot => rules != null ? rules.MaxStackPerSlot : 5;
+    public int RequiredGoldForSuccess => rules != null ? rules.RequiredGoldForSuccess : 160;
+    public int MaximumDaysForSuccess => rules != null ? rules.MaximumDaysForSuccess : 18;
 
     public bool HasCurrentJourneyStep =>
         route != null &&
@@ -68,6 +84,14 @@ public class GameState : MonoBehaviour
     private void OnValidate()
     {
         startingGold = Mathf.Max(0, startingGold);
+        inventory ??= new InventoryModel();
+        inventory.EnsureSlotCount(InventorySlotCount);
+    }
+
+    public void ConfigureRules(GameRulesDefinition rulesDefinition)
+    {
+        rules = rulesDefinition;
+        ClampState();
     }
 
     public void ConfigureRoute(JourneyRouteDefinition routeDefinition)
@@ -85,7 +109,7 @@ public class GameState : MonoBehaviour
 
     public void StartNewGame()
     {
-        gold = Mathf.Max(0, startingGold);
+        gold = Mathf.Max(0, StartingGold);
         currentJourneyStepIndex = 0;
         daysElapsed = 0;
         currentLocation = LocationId.NevaMouth;
@@ -93,8 +117,11 @@ public class GameState : MonoBehaviour
         isNewGameInitialized = true;
         completedEventIds.Clear();
         completedEventLookup.Clear();
+        inventory.EnsureSlotCount(InventorySlotCount);
+        inventory.ClearInventory();
 
         ClampState();
+        RaiseAllStateChanged();
     }
 
     public bool AdvanceJourneyStep()
@@ -118,6 +145,7 @@ public class GameState : MonoBehaviour
         }
 
         currentJourneyStepIndex++;
+        OnJourneyStepChanged?.Invoke(currentJourneyStepIndex, CurrentJourneyStep);
         return true;
     }
 
@@ -129,6 +157,7 @@ public class GameState : MonoBehaviour
         }
 
         gold += amount;
+        OnGoldChanged?.Invoke(gold);
     }
 
     public bool TrySpendGold(int amount)
@@ -139,6 +168,7 @@ public class GameState : MonoBehaviour
         }
 
         gold -= amount;
+        OnGoldChanged?.Invoke(gold);
         return true;
     }
 
@@ -150,16 +180,91 @@ public class GameState : MonoBehaviour
         }
 
         daysElapsed += days;
+        OnDaysChanged?.Invoke(daysElapsed);
     }
 
     public void SetCurrentLocation(LocationId location)
     {
+        if (currentLocation == location)
+        {
+            return;
+        }
+
         currentLocation = location;
+        OnLocationChanged?.Invoke(currentLocation);
     }
 
     public void MarkGameFinished()
     {
         isGameFinished = true;
+    }
+
+    public bool TryAddItem(GoodItem item, int quantity)
+    {
+        InventoryService service = new(inventory);
+        bool result = service.TryAddItem(item, quantity);
+        if (result)
+        {
+            OnInventoryChanged?.Invoke();
+        }
+
+        return result;
+    }
+
+    public bool TryRemoveItem(GoodItem item, int quantity)
+    {
+        InventoryService service = new(inventory);
+        bool result = service.TryRemoveItem(item, quantity);
+        if (result)
+        {
+            OnInventoryChanged?.Invoke();
+        }
+
+        return result;
+    }
+
+    public bool TryRemoveAnyCargo(int quantity)
+    {
+        InventoryService service = new(inventory);
+        bool result = service.TryRemoveAnyCargo(quantity);
+        if (result && quantity > 0)
+        {
+            OnInventoryChanged?.Invoke();
+        }
+
+        return result;
+    }
+
+    public bool MoveOrMergeSlot(int sourceIndex, int targetIndex)
+    {
+        InventoryService service = new(inventory);
+        bool result = service.MoveOrMergeSlot(sourceIndex, targetIndex);
+        if (result)
+        {
+            OnInventoryChanged?.Invoke();
+        }
+
+        return result;
+    }
+
+    public int GetOccupiedSlotCount()
+    {
+        return new InventoryService(inventory).GetOccupiedSlotCount();
+    }
+
+    public bool HasItem(GoodItem item, int quantity)
+    {
+        return new InventoryService(inventory).HasItem(item, quantity);
+    }
+
+    public int GetItemQuantity(GoodItem item)
+    {
+        return new InventoryService(inventory).GetItemQuantity(item);
+    }
+
+    public void SetJourneyProgress(float progress)
+    {
+        OnJourneyProgressChanged?.Invoke(Mathf.Clamp01(progress));
     }
 
     public bool HasCompletedEvent(string eventId)
@@ -194,6 +299,8 @@ public class GameState : MonoBehaviour
         startingGold = Mathf.Max(0, startingGold);
         gold = Mathf.Max(0, gold);
         daysElapsed = Mathf.Max(0, daysElapsed);
+        inventory ??= new InventoryModel();
+        inventory.EnsureSlotCount(InventorySlotCount);
 
         if (route == null || route.Steps == null || route.Steps.Count == 0)
         {
@@ -217,5 +324,15 @@ public class GameState : MonoBehaviour
                 completedEventIds.RemoveAt(i);
             }
         }
+    }
+
+    private void RaiseAllStateChanged()
+    {
+        OnGoldChanged?.Invoke(gold);
+        OnDaysChanged?.Invoke(daysElapsed);
+        OnInventoryChanged?.Invoke();
+        OnLocationChanged?.Invoke(currentLocation);
+        OnJourneyStepChanged?.Invoke(currentJourneyStepIndex, CurrentJourneyStep);
+        OnJourneyProgressChanged?.Invoke(CurrentJourneyStep?.StepType == JourneyStepType.Travel ? 0f : 1f);
     }
 }

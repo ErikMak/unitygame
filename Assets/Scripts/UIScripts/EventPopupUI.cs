@@ -18,7 +18,7 @@ public sealed class EventPopupUI : MonoBehaviour
     [SerializeField] private GameObject closeBlocker;
     [SerializeField] private EventChoiceButtonUI choiceButtonPrefab;
     [SerializeField] private MapCameraController mapCameraController;
-    [SerializeField] private bool continueImmediatelyOnChoice = true;
+    [SerializeField] private bool continueImmediatelyOnChoice;
 
     private readonly List<EventChoiceButtonUI> spawnedChoiceButtons = new();
     private Action<EventChoice> onChoiceSelected;
@@ -97,16 +97,21 @@ public sealed class EventPopupUI : MonoBehaviour
         }
 
         ClearChoiceButtons();
-        int currentGold = gameState != null ? gameState.Gold : 0;
         EventChoiceButtonUI[] existingButtons = choicesContainer != null
             ? choicesContainer.GetComponentsInChildren<EventChoiceButtonUI>(true)
             : System.Array.Empty<EventChoiceButtonUI>();
 
-        for (int i = 0; i < eventDefinition.Choices.Count; i++)
+        int visibleCount = Mathf.Min(4, eventDefinition.Choices.Count);
+        for (int i = 0; i < existingButtons.Length; i++)
+        {
+            existingButtons[i].gameObject.SetActive(i < visibleCount);
+        }
+
+        for (int i = 0; i < visibleCount; i++)
         {
             EventChoiceButtonUI button = i < existingButtons.Length ? existingButtons[i] : CreateChoiceButton();
             button.gameObject.SetActive(true);
-            button.Initialize(eventDefinition.Choices[i], currentGold, HandleChoiceSelected);
+            button.Initialize(eventDefinition.Choices[i], gameState, HandleChoiceSelected);
             spawnedChoiceButtons.Add(button);
         }
     }
