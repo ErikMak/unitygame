@@ -19,6 +19,7 @@ public sealed class EventPopupUI : MonoBehaviour
     [SerializeField] private EventChoiceButtonUI choiceButtonPrefab;
     [SerializeField] private MapCameraController mapCameraController;
     [SerializeField] private bool continueImmediatelyOnChoice;
+    [SerializeField] private int popupSortingOrder = 100;
 
     private readonly List<EventChoiceButtonUI> spawnedChoiceButtons = new();
     private Action<EventChoice> onChoiceSelected;
@@ -29,6 +30,8 @@ public sealed class EventPopupUI : MonoBehaviour
 
     private void Awake()
     {
+        EnsureCanvasConfiguration();
+
         if (illustration != null)
         {
             fallbackIllustration = illustration.sprite;
@@ -51,7 +54,9 @@ public sealed class EventPopupUI : MonoBehaviour
         onChoiceSelected = choiceSelected;
         onContinuePressed = continuePressed;
 
+        EnsureCanvasConfiguration();
         gameObject.SetActive(true);
+        transform.SetAsLastSibling();
         SetCameraEnabled(false);
 
         if (screenBlocker != null)
@@ -231,6 +236,57 @@ public sealed class EventPopupUI : MonoBehaviour
         if (mapCameraController != null)
         {
             mapCameraController.enabled = enabled;
+        }
+    }
+
+    private void EnsureCanvasConfiguration()
+    {
+        Canvas canvas = GetComponent<Canvas>();
+        if (canvas == null)
+        {
+            canvas = gameObject.AddComponent<Canvas>();
+        }
+
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = popupSortingOrder;
+
+        CanvasScaler scaler = GetComponent<CanvasScaler>();
+        if (scaler == null)
+        {
+            scaler = gameObject.AddComponent<CanvasScaler>();
+        }
+
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1280f, 720f);
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 0.5f;
+
+        if (GetComponent<GraphicRaycaster>() == null)
+        {
+            gameObject.AddComponent<GraphicRaycaster>();
+        }
+
+        if (transform is RectTransform rectTransform)
+        {
+            rectTransform.anchorMin = Vector2.zero;
+            rectTransform.anchorMax = Vector2.one;
+            rectTransform.offsetMin = Vector2.zero;
+            rectTransform.offsetMax = Vector2.zero;
+        }
+
+        if (screenBlocker != null && screenBlocker.transform is RectTransform blockerTransform)
+        {
+            blockerTransform.anchorMin = Vector2.zero;
+            blockerTransform.anchorMax = Vector2.one;
+            blockerTransform.offsetMin = Vector2.zero;
+            blockerTransform.offsetMax = Vector2.zero;
+
+            Image blockerImage = screenBlocker.GetComponent<Image>();
+            if (blockerImage != null)
+            {
+                blockerImage.raycastTarget = true;
+            }
         }
     }
 }

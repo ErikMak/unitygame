@@ -43,6 +43,7 @@ public sealed class CityHubController : MonoBehaviour
         }
 
         WireButtons();
+        SetButtonsInteractable(true);
         RefreshHeader();
         ClosePanels();
     }
@@ -57,6 +58,11 @@ public sealed class CityHubController : MonoBehaviour
         bool eventOpen = eventController != null && eventController.IsEventOpen;
         bool marketOpen = marketPanel != null && marketPanel.activeSelf;
         bool dragging = inventoryPanel != null && inventoryPanel.IsDragging;
+        if (inventoryButton != null)
+        {
+            inventoryButton.interactable = !eventOpen && !marketOpen;
+        }
+
         leaveCityButton.interactable = !eventOpen && !marketOpen && !dragging;
         SetSightButtonsInteractable(!eventOpen && !marketOpen);
     }
