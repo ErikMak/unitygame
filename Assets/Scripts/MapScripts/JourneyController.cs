@@ -264,7 +264,6 @@ public sealed class JourneyController : MonoBehaviour
 
             if (flatDirection.magnitude <= waypointArrivalDistance)
             {
-                SetPlayerPosition(targetPosition);
                 yield break;
             }
 
