@@ -11,6 +11,7 @@ public sealed class JourneyController : MonoBehaviour
     [SerializeField] private GameState gameState;
     [SerializeField] private MapPointRegistry pointRegistry;
     [SerializeField] private JourneyPathRegistry pathRegistry;
+    [SerializeField] private EventController eventController;
     [SerializeField] private Transform playerUnit;
 
     [SerializeField, Min(0.001f)] private float waypointArrivalDistance = 0.05f;
@@ -21,6 +22,7 @@ public sealed class JourneyController : MonoBehaviour
     [SerializeField] private JourneyControllerState state = JourneyControllerState.Initializing;
 
     private Coroutine processingCoroutine;
+    private Coroutine eventContinuationCoroutine;
     private int completedStepIndex = -1;
 
     public JourneyControllerState State => state;
@@ -38,6 +40,22 @@ public sealed class JourneyController : MonoBehaviour
         }
 
         processingCoroutine = StartCoroutine(InitializeAndRun());
+    }
+
+    public void ContinueAfterEvent()
+    {
+        if (state != JourneyControllerState.StoppedAtEvent)
+        {
+            return;
+        }
+
+        if (eventContinuationCoroutine != null)
+        {
+            return;
+        }
+
+        state = JourneyControllerState.Waiting;
+        eventContinuationCoroutine = StartCoroutine(ContinueAfterEventRoutine());
     }
 
     private IEnumerator InitializeAndRun()
@@ -122,6 +140,11 @@ public sealed class JourneyController : MonoBehaviour
             return false;
         }
 
+        if (eventController == null)
+        {
+            eventController = FindAnyObjectByType<EventController>();
+        }
+
         if (playerUnit == null)
         {
             Debug.LogError($"{nameof(JourneyController)}: PlayerUnit reference is missing.", this);
@@ -187,8 +210,7 @@ public sealed class JourneyController : MonoBehaviour
                 Debug.Log($"{nameof(JourneyController)}: stopped at location {step.DestinationLocation}.", this);
                 break;
             case JourneyStepType.Event:
-                state = JourneyControllerState.StoppedAtEvent;
-                Debug.Log($"{nameof(JourneyController)}: stopped at event step '{step.Id}'.", this);
+                HandleEventStep(step);
                 break;
             case JourneyStepType.Ending:
                 PlacePlayerAtMapPoint(step.EndPoint);
@@ -200,6 +222,42 @@ public sealed class JourneyController : MonoBehaviour
                 Debug.LogError($"{nameof(JourneyController)}: unsupported JourneyStepType '{step.StepType}'.", this);
                 break;
         }
+    }
+
+    private IEnumerator ContinueAfterEventRoutine()
+    {
+        yield return WaitUnscaled(NextStepDelaySeconds);
+        yield return ProcessCurrentStep();
+        eventContinuationCoroutine = null;
+    }
+
+    private void HandleEventStep(JourneyStep step)
+    {
+        state = JourneyControllerState.StoppedAtEvent;
+        processingCoroutine = null;
+
+        if (step.Event == null)
+        {
+            Debug.LogError($"{nameof(JourneyController)}: event step '{step.Id}' has no EventDefinition.", this);
+            state = JourneyControllerState.Error;
+            return;
+        }
+
+        if (gameState.HasCompletedEvent(step.Event.EventId) && step.Event.IsOneShot)
+        {
+            gameState.AdvanceJourneyStep();
+            ContinueAfterEvent();
+            return;
+        }
+
+        if (eventController == null)
+        {
+            Debug.LogError($"{nameof(JourneyController)}: EventController reference is missing.", this);
+            state = JourneyControllerState.Error;
+            return;
+        }
+
+        eventController.OpenEvent(step.Event);
     }
 
     private IEnumerator ProcessTravelStep(JourneyStep step, int stepIndex)

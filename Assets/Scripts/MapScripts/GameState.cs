@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameState : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class GameState : MonoBehaviour
     private LocationId currentLocation;
     private bool isNewGameInitialized;
     private bool isGameFinished;
+    [SerializeField] private List<string> completedEventIds = new();
+    private readonly HashSet<string> completedEventLookup = new();
 
     public int StartingGold => startingGold;
     public int Gold => gold;
@@ -59,6 +62,7 @@ public class GameState : MonoBehaviour
         }
 
         ClampState();
+        RebuildCompletedEventLookup();
     }
 
     private void OnValidate()
@@ -87,6 +91,8 @@ public class GameState : MonoBehaviour
         currentLocation = LocationId.NevaMouth;
         isGameFinished = false;
         isNewGameInitialized = true;
+        completedEventIds.Clear();
+        completedEventLookup.Clear();
 
         ClampState();
     }
@@ -156,6 +162,33 @@ public class GameState : MonoBehaviour
         isGameFinished = true;
     }
 
+    public bool HasCompletedEvent(string eventId)
+    {
+        if (string.IsNullOrWhiteSpace(eventId))
+        {
+            return false;
+        }
+
+        RebuildCompletedEventLookup();
+        return completedEventLookup.Contains(eventId);
+    }
+
+    public void RegisterCompletedEvent(string eventId)
+    {
+        if (string.IsNullOrWhiteSpace(eventId))
+        {
+            return;
+        }
+
+        RebuildCompletedEventLookup();
+        if (!completedEventLookup.Add(eventId))
+        {
+            return;
+        }
+
+        completedEventIds.Add(eventId);
+    }
+
     private void ClampState()
     {
         startingGold = Mathf.Max(0, startingGold);
@@ -169,5 +202,20 @@ public class GameState : MonoBehaviour
         }
 
         currentJourneyStepIndex = Mathf.Clamp(currentJourneyStepIndex, 0, route.Steps.Count - 1);
+    }
+
+    private void RebuildCompletedEventLookup()
+    {
+        completedEventIds ??= new List<string>();
+        completedEventLookup.Clear();
+
+        for (int i = completedEventIds.Count - 1; i >= 0; i--)
+        {
+            string eventId = completedEventIds[i];
+            if (string.IsNullOrWhiteSpace(eventId) || !completedEventLookup.Add(eventId))
+            {
+                completedEventIds.RemoveAt(i);
+            }
+        }
     }
 }

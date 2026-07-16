@@ -24,6 +24,17 @@ MonoBehaviour:
     travelDuration: 6
     daysCost: 1
     isReturnRoute: 0
+    eventDefinition: {fileID: 0}
+  - id: event_oreshek_test
+    displayName: Event Oreshek
+    stepType: 1
+    startPoint: 1
+    endPoint: 1
+    destinationLocation: 1
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+    eventDefinition: {fileID: 11400000, guid: 07511c5020c1b624cb245ad54701f2b6, type: 2}
   - id: travel_oreshek_to_ladoga
     displayName: Oreshek to Ladoga
     stepType: 0
@@ -33,6 +44,17 @@ MonoBehaviour:
     travelDuration: 5
     daysCost: 1
     isReturnRoute: 0
+    eventDefinition: {fileID: 0}
+  - id: event_ladoga_test
+    displayName: Event Ladoga
+    stepType: 1
+    startPoint: 2
+    endPoint: 2
+    destinationLocation: 2
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+    eventDefinition: {fileID: 11400000, guid: 13641f487b81bf240af7a9524a320742, type: 2}
   - id: travel_ladoga_to_novgorod
     displayName: Ladoga to Novgorod
     stepType: 0
@@ -42,6 +64,7 @@ MonoBehaviour:
     travelDuration: 8
     daysCost: 2
     isReturnRoute: 0
+    eventDefinition: {fileID: 0}
   - id: location_novgorod_first_visit
     displayName: Arrival in Novgorod
     stepType: 2
@@ -51,6 +74,7 @@ MonoBehaviour:
     travelDuration: 0
     daysCost: 0
     isReturnRoute: 0
+    eventDefinition: {fileID: 0}
   - id: travel_novgorod_to_torzhok
     displayName: Novgorod to Torzhok
     stepType: 0
@@ -60,6 +84,17 @@ MonoBehaviour:
     travelDuration: 10
     daysCost: 2
     isReturnRoute: 0
+    eventDefinition: {fileID: 0}
+  - id: event_toll_collector_test
+    displayName: Event Toll Collector
+    stepType: 1
+    startPoint: 4
+    endPoint: 4
+    destinationLocation: 4
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+    eventDefinition: {fileID: 11400000, guid: 152ca59cb968b8340ba7d4664e226873, type: 2}
   - id: location_torzhok
     displayName: Arrival in Torzhok
     stepType: 2
@@ -69,6 +104,7 @@ MonoBehaviour:
     travelDuration: 0
     daysCost: 0
     isReturnRoute: 0
+    eventDefinition: {fileID: 0}
   - id: travel_torzhok_to_novgorod
     displayName: Torzhok to Novgorod
     stepType: 0
@@ -78,6 +114,7 @@ MonoBehaviour:
     travelDuration: 10
     daysCost: 2
     isReturnRoute: 1
+    eventDefinition: {fileID: 0}
   - id: location_novgorod_return
     displayName: Return to Novgorod
     stepType: 2
@@ -87,6 +124,7 @@ MonoBehaviour:
     travelDuration: 0
     daysCost: 0
     isReturnRoute: 0
+    eventDefinition: {fileID: 0}
   - id: travel_novgorod_to_baltic
     displayName: Novgorod to Baltic Return
     stepType: 0
@@ -96,6 +134,7 @@ MonoBehaviour:
     travelDuration: 14
     daysCost: 3
     isReturnRoute: 1
+    eventDefinition: {fileID: 0}
   - id: ending_baltic_return
     displayName: Baltic Return Ending
     stepType: 3
@@ -105,3 +144,4 @@ MonoBehaviour:
     travelDuration: 0
     daysCost: 0
     isReturnRoute: 0
+    eventDefinition: {fileID: 0}

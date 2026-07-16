@@ -13,6 +13,7 @@ public class JourneyStep
     [SerializeField, Min(0f)] private float travelDuration;
     [SerializeField, Min(0)] private int daysCost;
     [SerializeField] private bool isReturnRoute;
+    [SerializeField] private EventDefinition eventDefinition;
 
     public string Id
     {
@@ -66,6 +67,12 @@ public class JourneyStep
     {
         get => isReturnRoute;
         set => isReturnRoute = value;
+    }
+
+    public EventDefinition Event
+    {
+        get => eventDefinition;
+        set => eventDefinition = value;
     }
 
     public void ClampNonNegativeValues()
