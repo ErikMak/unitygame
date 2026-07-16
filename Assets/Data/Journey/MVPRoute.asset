@@ -1,0 +1,181 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d07fe4f2793997e4792b94015160e301, type: 3}
+  m_Name: MVPRoute
+  m_EditorClassIdentifier: 
+  routeId: mvp_linear_route
+  displayName: MVP Linear Route
+  steps:
+  - id: event_intro_assignment
+    displayName: "\u041F\u043E\u0440\u0443\u0447\u0435\u043D\u0438\u0435 \u043D\u0430\u0441\u0442\u0430\u0432\u043D\u0438\u043A\u0430"
+    stepType: 1
+    startPoint: 0
+    endPoint: 0
+    destinationLocation: 0
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+    eventDefinition: {fileID: 11400000, guid: 4aa15787c23908c4eaaa908822f710cc, type: 2}
+  - id: travel_neva_to_oreshek
+    displayName: "\u0423\u0441\u0442\u044C\u0435 \u041D\u0435\u0432\u044B -> \u041E\u0440\u0435\u0448\u0435\u043A"
+    stepType: 0
+    startPoint: 0
+    endPoint: 1
+    destinationLocation: 1
+    travelDuration: 5
+    daysCost: 1
+    isReturnRoute: 0
+    eventDefinition: {fileID: 0}
+  - id: event_oreshek_inspection
+    displayName: "\u0414\u043E\u0441\u043C\u043E\u0442\u0440 \u0432 \u041E\u0440\u0435\u0448\u043A\u0435"
+    stepType: 1
+    startPoint: 1
+    endPoint: 1
+    destinationLocation: 1
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+    eventDefinition: {fileID: 11400000, guid: 17d7514bfea29214e8db55b19559762e, type: 2}
+  - id: travel_oreshek_to_ladoga
+    displayName: "\u041E\u0440\u0435\u0448\u0435\u043A -> \u041B\u0430\u0434\u043E\u0433\u0430"
+    stepType: 0
+    startPoint: 1
+    endPoint: 2
+    destinationLocation: 2
+    travelDuration: 5
+    daysCost: 1
+    isReturnRoute: 0
+    eventDefinition: {fileID: 0}
+  - id: event_ladoga_storm
+    displayName: "\u0428\u0442\u043E\u0440\u043C \u0443 \u041B\u0430\u0434\u043E\u0433\u0438"
+    stepType: 1
+    startPoint: 2
+    endPoint: 2
+    destinationLocation: 2
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+    eventDefinition: {fileID: 11400000, guid: 3af7a78faf7369b4892ddbd0f4eecaa1, type: 2}
+  - id: travel_ladoga_to_novgorod
+    displayName: "\u041B\u0430\u0434\u043E\u0433\u0430 -> \u041D\u043E\u0432\u0433\u043E\u0440\u043E\u0434"
+    stepType: 0
+    startPoint: 2
+    endPoint: 3
+    destinationLocation: 3
+    travelDuration: 7
+    daysCost: 2
+    isReturnRoute: 0
+    eventDefinition: {fileID: 0}
+  - id: event_german_court_arrival
+    displayName: "\u041F\u0440\u0430\u0432\u0438\u043B\u043E \u041D\u0435\u043C\u0435\u0446\u043A\u043E\u0433\u043E
+      \u0434\u0432\u043E\u0440\u0430"
+    stepType: 1
+    startPoint: 3
+    endPoint: 3
+    destinationLocation: 3
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+    eventDefinition: {fileID: 11400000, guid: 2179f0fe8016d5e4aa118dc0d6140a90, type: 2}
+  - id: location_novgorod_first_visit
+    displayName: "\u0412\u0435\u043B\u0438\u043A\u0438\u0439 \u041D\u043E\u0432\u0433\u043E\u0440\u043E\u0434"
+    stepType: 2
+    startPoint: 3
+    endPoint: 3
+    destinationLocation: 3
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+    eventDefinition: {fileID: 0}
+  - id: travel_novgorod_to_torzhok
+    displayName: "\u041D\u043E\u0432\u0433\u043E\u0440\u043E\u0434 -> \u0422\u043E\u0440\u0436\u043E\u043A"
+    stepType: 0
+    startPoint: 3
+    endPoint: 4
+    destinationLocation: 4
+    travelDuration: 7
+    daysCost: 2
+    isReturnRoute: 0
+    eventDefinition: {fileID: 0}
+  - id: event_toll_collector
+    displayName: "\u041C\u044B\u0442 \u043D\u0430 \u043F\u0443\u0442\u0438 \u043A
+      \u0422\u043E\u0440\u0436\u043A\u0443"
+    stepType: 1
+    startPoint: 4
+    endPoint: 4
+    destinationLocation: 4
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+    eventDefinition: {fileID: 11400000, guid: 260f965260ac66a45bea70e15f3efdfa, type: 2}
+  - id: location_torzhok
+    displayName: "\u0422\u043E\u0440\u0436\u043E\u043A"
+    stepType: 2
+    startPoint: 4
+    endPoint: 4
+    destinationLocation: 4
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+    eventDefinition: {fileID: 0}
+  - id: travel_torzhok_to_novgorod
+    displayName: "\u0422\u043E\u0440\u0436\u043E\u043A -> \u041D\u043E\u0432\u0433\u043E\u0440\u043E\u0434"
+    stepType: 0
+    startPoint: 4
+    endPoint: 3
+    destinationLocation: 3
+    travelDuration: 7
+    daysCost: 2
+    isReturnRoute: 1
+    eventDefinition: {fileID: 0}
+  - id: event_river_raiders
+    displayName: "\u041B\u044E\u0434\u0438 \u0443 \u0440\u0435\u0447\u043D\u043E\u0439
+      \u043F\u0440\u043E\u0442\u043E\u043A\u0438"
+    stepType: 1
+    startPoint: 3
+    endPoint: 3
+    destinationLocation: 3
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 1
+    eventDefinition: {fileID: 11400000, guid: 162fc6d61bc971843a82d229c6ee28c3, type: 2}
+  - id: location_novgorod_return
+    displayName: "\u0412\u0435\u043B\u0438\u043A\u0438\u0439 \u041D\u043E\u0432\u0433\u043E\u0440\u043E\u0434"
+    stepType: 2
+    startPoint: 3
+    endPoint: 3
+    destinationLocation: 3
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 1
+    eventDefinition: {fileID: 0}
+  - id: travel_novgorod_to_baltic
+    displayName: "\u041D\u043E\u0432\u0433\u043E\u0440\u043E\u0434 -> \u0411\u0430\u043B\u0442\u0438\u043A\u0430"
+    stepType: 0
+    startPoint: 3
+    endPoint: 5
+    destinationLocation: 5
+    travelDuration: 8
+    daysCost: 3
+    isReturnRoute: 1
+    eventDefinition: {fileID: 0}
+  - id: ending_baltic_return
+    displayName: "\u0412\u043E\u0437\u0432\u0440\u0430\u0449\u0435\u043D\u0438\u0435
+      \u043A \u0411\u0430\u043B\u0442\u0438\u043A\u0435"
+    stepType: 3
+    startPoint: 5
+    endPoint: 5
+    destinationLocation: 5
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 1
+    eventDefinition: {fileID: 0}
