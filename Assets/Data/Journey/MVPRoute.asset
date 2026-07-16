@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d07fe4f2793997e4792b94015160e301, type: 3}
+  m_Name: MVPRoute
+  m_EditorClassIdentifier: 
+  routeId: mvp_route
+  displayName: MVP Linear Journey Route
+  steps:
+  - id: travel_neva_to_oreshek
+    displayName: Neva Mouth to Oreshek
+    stepType: 0
+    startPoint: 0
+    endPoint: 1
+    destinationLocation: 1
+    travelDuration: 1
+    daysCost: 1
+    isReturnRoute: 0
+  - id: travel_oreshek_to_ladoga
+    displayName: Oreshek to Ladoga
+    stepType: 0
+    startPoint: 1
+    endPoint: 2
+    destinationLocation: 2
+    travelDuration: 1
+    daysCost: 1
+    isReturnRoute: 0
+  - id: travel_ladoga_to_novgorod
+    displayName: Ladoga to Novgorod
+    stepType: 0
+    startPoint: 2
+    endPoint: 3
+    destinationLocation: 3
+    travelDuration: 2
+    daysCost: 2
+    isReturnRoute: 0
+  - id: location_novgorod_first_visit
+    displayName: Arrival in Novgorod
+    stepType: 2
+    startPoint: 3
+    endPoint: 3
+    destinationLocation: 3
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+  - id: travel_novgorod_to_torzhok
+    displayName: Novgorod to Torzhok
+    stepType: 0
+    startPoint: 3
+    endPoint: 4
+    destinationLocation: 4
+    travelDuration: 2
+    daysCost: 2
+    isReturnRoute: 0
+  - id: location_torzhok
+    displayName: Arrival in Torzhok
+    stepType: 2
+    startPoint: 4
+    endPoint: 4
+    destinationLocation: 4
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+  - id: travel_torzhok_to_novgorod
+    displayName: Torzhok to Novgorod
+    stepType: 0
+    startPoint: 4
+    endPoint: 3
+    destinationLocation: 3
+    travelDuration: 2
+    daysCost: 2
+    isReturnRoute: 1
+  - id: location_novgorod_return
+    displayName: Return to Novgorod
+    stepType: 2
+    startPoint: 3
+    endPoint: 3
+    destinationLocation: 3
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
+  - id: travel_novgorod_to_baltic
+    displayName: Novgorod to Baltic Return
+    stepType: 0
+    startPoint: 3
+    endPoint: 5
+    destinationLocation: 5
+    travelDuration: 3
+    daysCost: 3
+    isReturnRoute: 1
+  - id: ending_baltic_return
+    displayName: Baltic Return Ending
+    stepType: 3
+    startPoint: 5
+    endPoint: 5
+    destinationLocation: 5
+    travelDuration: 0
+    daysCost: 0
+    isReturnRoute: 0
