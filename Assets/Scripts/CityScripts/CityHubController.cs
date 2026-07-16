@@ -124,6 +124,7 @@ public sealed class CityHubController : MonoBehaviour
 
         ClosePanels();
         marketPanel.SetActive(true);
+        marketPanel.transform.SetAsLastSibling();
     }
 
     public void OpenInventory()

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class InventoryPanelUI : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
     [SerializeField] private InventorySlotUI slotPrefab;
     [SerializeField] private DraggedItemUI draggedItem;
     [SerializeField] private EventController eventController;
+    [SerializeField] private Button closeButton;
 
     private readonly List<InventorySlotUI> slots = new();
     private GameState gameState;
@@ -22,6 +24,20 @@ public sealed class InventoryPanelUI : MonoBehaviour
         eventController ??= FindAnyObjectByType<EventController>();
         BuildSlots();
         Refresh();
+
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveListener(Hide);
+            closeButton.onClick.AddListener(Hide);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveListener(Hide);
+        }
     }
 
     private void OnEnable()
@@ -47,6 +63,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
         gameObject.SetActive(visible);
         if (visible)
         {
+            transform.SetAsLastSibling();
             Refresh();
         }
     }
