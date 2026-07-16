@@ -21,7 +21,7 @@ MonoBehaviour:
     startPoint: 0
     endPoint: 1
     destinationLocation: 1
-    travelDuration: 1
+    travelDuration: 6
     daysCost: 1
     isReturnRoute: 0
   - id: travel_oreshek_to_ladoga
@@ -30,7 +30,7 @@ MonoBehaviour:
     startPoint: 1
     endPoint: 2
     destinationLocation: 2
-    travelDuration: 1
+    travelDuration: 5
     daysCost: 1
     isReturnRoute: 0
   - id: travel_ladoga_to_novgorod
@@ -39,7 +39,7 @@ MonoBehaviour:
     startPoint: 2
     endPoint: 3
     destinationLocation: 3
-    travelDuration: 2
+    travelDuration: 8
     daysCost: 2
     isReturnRoute: 0
   - id: location_novgorod_first_visit
@@ -57,7 +57,7 @@ MonoBehaviour:
     startPoint: 3
     endPoint: 4
     destinationLocation: 4
-    travelDuration: 2
+    travelDuration: 10
     daysCost: 2
     isReturnRoute: 0
   - id: location_torzhok
@@ -75,7 +75,7 @@ MonoBehaviour:
     startPoint: 4
     endPoint: 3
     destinationLocation: 3
-    travelDuration: 2
+    travelDuration: 10
     daysCost: 2
     isReturnRoute: 1
   - id: location_novgorod_return
@@ -93,7 +93,7 @@ MonoBehaviour:
     startPoint: 3
     endPoint: 5
     destinationLocation: 5
-    travelDuration: 3
+    travelDuration: 14
     daysCost: 3
     isReturnRoute: 1
   - id: ending_baltic_return
