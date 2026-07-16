@@ -846,6 +846,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8450144147474243759, guid: 5c79a1fe9ed0a794bbc0631fd212390a, type: 3}
   m_PrefabInstance: {fileID: 558338052}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &558338054 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5997668975524296721, guid: 5c79a1fe9ed0a794bbc0631fd212390a, type: 3}
+  m_PrefabInstance: {fileID: 558338052}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &663507067
 GameObject:
   m_ObjectHideFlags: 0
@@ -1384,6 +1395,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8450144147474243759, guid: 5c79a1fe9ed0a794bbc0631fd212390a, type: 3}
   m_PrefabInstance: {fileID: 1022939476}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1022939478 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5997668975524296721, guid: 5c79a1fe9ed0a794bbc0631fd212390a, type: 3}
+  m_PrefabInstance: {fileID: 1022939476}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &1127631162
 GameObject:
   m_ObjectHideFlags: 0
@@ -1780,6 +1802,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8450144147474243759, guid: 5c79a1fe9ed0a794bbc0631fd212390a, type: 3}
   m_PrefabInstance: {fileID: 1338560347}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1338560349 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5997668975524296721, guid: 5c79a1fe9ed0a794bbc0631fd212390a, type: 3}
+  m_PrefabInstance: {fileID: 1338560347}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &1494345877
 GameObject:
   m_ObjectHideFlags: 0
@@ -1789,6 +1822,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1494345878}
+  - component: {fileID: 1494345879}
   m_Layer: 0
   m_Name: ManagerBox
   m_TagString: Untagged
@@ -1812,6 +1846,30 @@ Transform:
   - {fileID: 1577227688}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1494345879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494345877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb0df554c9ee6064c80acb7071a2d80c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JourneyEndingController
+  resultTitleText: {fileID: 1558208428}
+  narrativeText: {fileID: 411296484}
+  startingGoldValueText: {fileID: 1127631164}
+  finalGoldValueText: {fileID: 1709268506}
+  daysValueText: {fileID: 1902381358}
+  routeValueText: {fileID: 249946730}
+  locationValueText: {fileID: 270977782}
+  restartButton: {fileID: 558338054}
+  mainMenuButton: {fileID: 1022939478}
+  quitButton: {fileID: 1338560349}
+  mainMenuSceneName: MainMenu
+  mapSceneName: MapScene
 --- !u!1 &1550042234
 GameObject:
   m_ObjectHideFlags: 0

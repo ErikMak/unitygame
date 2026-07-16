@@ -14,6 +14,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
     public bool IsOpen => gameObject.activeSelf;
     public DraggedItemUI DraggedItem => draggedItem;
     public bool IsDragBlocked => eventController != null && eventController.IsEventOpen;
+    public bool IsDragging => draggedItem != null && draggedItem.gameObject.activeSelf;
 
     private void Awake()
     {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public sealed class JourneyController : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public sealed class JourneyController : MonoBehaviour
     [SerializeField, Min(0f)] private float rotationSpeedDegrees = 240f;
     [SerializeField, Min(0f)] private float startDelaySeconds = 0.50f;
     [SerializeField] private bool autoStart = true;
+    [SerializeField] private string citySceneName = "CityScene";
+    [SerializeField] private string endSceneName = "EndScene";
 
     [SerializeField] private JourneyControllerState state = JourneyControllerState.Initializing;
 
@@ -207,7 +210,14 @@ public sealed class JourneyController : MonoBehaviour
             case JourneyStepType.Location:
                 PlacePlayerAtMapPoint(step.EndPoint);
                 state = JourneyControllerState.StoppedAtLocation;
+                if (!gameState.TryRegisterCurrentLocationVisit())
+                {
+                    Debug.LogError($"{nameof(JourneyController)}: failed to register location step '{step.Id}'.", this);
+                    state = JourneyControllerState.Error;
+                    break;
+                }
                 Debug.Log($"{nameof(JourneyController)}: stopped at location {step.DestinationLocation}.", this);
+                LoadScene(citySceneName);
                 break;
             case JourneyStepType.Event:
                 HandleEventStep(step);
@@ -216,6 +226,7 @@ public sealed class JourneyController : MonoBehaviour
                 PlacePlayerAtMapPoint(step.EndPoint);
                 state = JourneyControllerState.Finished;
                 gameState.MarkGameFinished();
+                LoadScene(endSceneName);
                 break;
             default:
                 state = JourneyControllerState.Error;
@@ -417,6 +428,18 @@ public sealed class JourneyController : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
+    }
+
+    private void LoadScene(string sceneName)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            Debug.LogError($"{nameof(JourneyController)}: target scene name is empty.", this);
+            state = JourneyControllerState.Error;
+            return;
+        }
+
+        SceneManager.LoadScene(sceneName);
     }
 }
 

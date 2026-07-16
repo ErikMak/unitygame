@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 502785449f2c61d4098f68811ce668da, type: 3}
+  m_Name: CITY_Novgorod
+  m_EditorClassIdentifier: Assembly-CSharp::CityDefinition
+  location: 3
+  displayName: "\u0412\u0435\u043B\u0438\u043A\u0438\u0439 \u041D\u043E\u0432\u0433\u043E\u0440\u043E\u0434"
+  firstVisitEvent: {fileID: 11400000, guid: 2179f0fe8016d5e4aa118dc0d6140a90, type: 2}
+  returnVisitEvent: {fileID: 11400000, guid: ec01750893383d94a85808b8f7c17353, type: 2}
+  churchEvent: {fileID: 11400000, guid: 8a196b790a72e414c86a2e704deb98fc, type: 2}

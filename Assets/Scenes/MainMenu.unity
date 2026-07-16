@@ -212,7 +212,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 80975154}
-  - component: {fileID: 471474569}
   m_Layer: 0
   m_Name: CameraBox
   m_TagString: Untagged
@@ -1597,6 +1596,7 @@ GameObject:
   m_Component:
   - component: {fileID: 709664159}
   - component: {fileID: 709664160}
+  - component: {fileID: 709664162}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -1635,6 +1635,18 @@ MonoBehaviour:
   settingsContainer: {fileID: 213616306}
   fadeCanvasGroup: {fileID: 1102868142}
   fadeDuration: 0.6
+--- !u!114 &709664162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709664157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2011be14148bbcf498fb0f1d64b71a39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainMenuStateResetter
 --- !u!1 &710670573
 GameObject:
   m_ObjectHideFlags: 0
@@ -3716,4 +3728,3 @@ SceneRoots:
   - {fileID: 80975154}
   - {fileID: 1828065903}
   - {fileID: 771918445}
-  - {fileID: 570088094}

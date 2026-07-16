@@ -10,6 +10,11 @@ public sealed class MarketController : MonoBehaviour
         gameState = GameState.Instance != null ? GameState.Instance : FindAnyObjectByType<GameState>();
     }
 
+    public void SetLocation(LocationId location)
+    {
+        marketLocation = location;
+    }
+
     public bool TryBuy(GoodItem item)
     {
         if (gameState == null || item == null)
@@ -28,7 +33,13 @@ public sealed class MarketController : MonoBehaviour
             return false;
         }
 
-        return gameState.TrySpendGold(price);
+        if (gameState.TrySpendGold(price))
+        {
+            return true;
+        }
+
+        gameState.TryRemoveItem(item, 1);
+        return false;
     }
 
     public bool TrySell(GoodItem item)

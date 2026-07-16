@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public sealed class EventController : MonoBehaviour
 {
@@ -10,10 +11,22 @@ public sealed class EventController : MonoBehaviour
     private EventChoice appliedChoice;
     private bool isEventOpen;
     private bool hasAppliedChoice;
+    private bool advanceJourneyOnClose;
+    private Action standaloneCompleted;
 
     public bool IsEventOpen => isEventOpen;
 
     public void OpenEvent(EventDefinition eventDefinition)
+    {
+        OpenInternal(eventDefinition, true, null);
+    }
+
+    public void OpenStandaloneEvent(EventDefinition eventDefinition, Action completed = null)
+    {
+        OpenInternal(eventDefinition, false, completed);
+    }
+
+    private void OpenInternal(EventDefinition eventDefinition, bool advanceJourney, Action completed)
     {
         if (isEventOpen)
         {
@@ -23,7 +36,7 @@ public sealed class EventController : MonoBehaviour
 
         ResolveReferences();
 
-        if (gameState == null || journeyController == null || eventPopupUI == null)
+        if (gameState == null || eventPopupUI == null || (advanceJourney && journeyController == null))
         {
             Debug.LogError($"{nameof(EventController)}: missing required references.", this);
             return;
@@ -45,6 +58,8 @@ public sealed class EventController : MonoBehaviour
         appliedChoice = null;
         hasAppliedChoice = false;
         isEventOpen = true;
+        advanceJourneyOnClose = advanceJourney;
+        standaloneCompleted = completed;
 
         eventPopupUI.Open(eventDefinition, gameState, OnChoiceSelected, OnContinuePressed);
     }
@@ -221,11 +236,19 @@ public sealed class EventController : MonoBehaviour
         appliedChoice = null;
         hasAppliedChoice = false;
 
-        gameState.AdvanceJourneyStep();
-
-        if (shouldContinue)
+        if (advanceJourneyOnClose)
         {
-            journeyController.ContinueAfterEvent();
+            gameState.AdvanceJourneyStep();
+            if (shouldContinue)
+            {
+                journeyController.ContinueAfterEvent();
+            }
+        }
+        else
+        {
+            Action completed = standaloneCompleted;
+            standaloneCompleted = null;
+            completed?.Invoke();
         }
     }
 

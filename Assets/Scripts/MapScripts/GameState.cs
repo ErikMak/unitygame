@@ -10,6 +10,11 @@ public class GameState : MonoBehaviour
     [SerializeField] private GameRulesDefinition rules;
     [SerializeField] private JourneyRouteDefinition route;
     [SerializeField] private InventoryModel inventory = new();
+    [SerializeField] private int startYear = 1200;
+    [SerializeField, Range(1, 12)] private int startMonth = 5;
+    [SerializeField, Range(1, 31)] private int startDay = 1;
+    [SerializeField] private List<LocationVisitRecord> cityVisitCounts = new();
+    [SerializeField] private List<int> processedLocationStepIndices = new();
 
     private int gold;
     private int currentJourneyStepIndex;
@@ -31,6 +36,7 @@ public class GameState : MonoBehaviour
     public int Gold => gold;
     public int CurrentJourneyStepIndex => currentJourneyStepIndex;
     public int DaysElapsed => daysElapsed;
+    public DateTime CurrentDate => CreateStartDate().AddDays(daysElapsed);
     public LocationId CurrentLocation => currentLocation;
     public bool IsNewGameInitialized => isNewGameInitialized;
     public bool IsGameFinished => isGameFinished;
@@ -81,6 +87,14 @@ public class GameState : MonoBehaviour
         RebuildCompletedEventLookup();
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
     private void OnValidate()
     {
         startingGold = Mathf.Max(0, startingGold);
@@ -117,6 +131,8 @@ public class GameState : MonoBehaviour
         isNewGameInitialized = true;
         completedEventIds.Clear();
         completedEventLookup.Clear();
+        cityVisitCounts.Clear();
+        processedLocationStepIndices.Clear();
         inventory.EnsureSlotCount(InventorySlotCount);
         inventory.ClearInventory();
 
@@ -197,6 +213,50 @@ public class GameState : MonoBehaviour
     public void MarkGameFinished()
     {
         isGameFinished = true;
+    }
+
+    public int GetCityVisitCount(LocationId location)
+    {
+        LocationVisitRecord record = cityVisitCounts.Find(item => item.Location == location);
+        return record != null ? record.Count : 0;
+    }
+
+    public bool TryRegisterCurrentLocationVisit()
+    {
+        JourneyStep step = CurrentJourneyStep;
+        if (step == null || step.StepType != JourneyStepType.Location)
+        {
+            return false;
+        }
+
+        SetCurrentLocation(step.DestinationLocation);
+        if (processedLocationStepIndices.Contains(currentJourneyStepIndex))
+        {
+            return true;
+        }
+
+        processedLocationStepIndices.Add(currentJourneyStepIndex);
+        LocationVisitRecord record = cityVisitCounts.Find(item => item.Location == step.DestinationLocation);
+        if (record == null)
+        {
+            record = new LocationVisitRecord(step.DestinationLocation);
+            cityVisitCounts.Add(record);
+        }
+
+        record.Increment();
+        return true;
+    }
+
+    public bool TryCompleteCurrentLocationStep()
+    {
+        JourneyStep step = CurrentJourneyStep;
+        if (step == null || step.StepType != JourneyStepType.Location)
+        {
+            return false;
+        }
+
+        SetCurrentLocation(step.DestinationLocation);
+        return AdvanceJourneyStep();
     }
 
     public bool TryAddItem(GoodItem item, int quantity)
@@ -300,6 +360,8 @@ public class GameState : MonoBehaviour
         gold = Mathf.Max(0, gold);
         daysElapsed = Mathf.Max(0, daysElapsed);
         inventory ??= new InventoryModel();
+        cityVisitCounts ??= new List<LocationVisitRecord>();
+        processedLocationStepIndices ??= new List<int>();
         inventory.EnsureSlotCount(InventorySlotCount);
 
         if (route == null || route.Steps == null || route.Steps.Count == 0)
@@ -334,5 +396,33 @@ public class GameState : MonoBehaviour
         OnLocationChanged?.Invoke(currentLocation);
         OnJourneyStepChanged?.Invoke(currentJourneyStepIndex, CurrentJourneyStep);
         OnJourneyProgressChanged?.Invoke(CurrentJourneyStep?.StepType == JourneyStepType.Travel ? 0f : 1f);
+    }
+
+    private DateTime CreateStartDate()
+    {
+        int year = Mathf.Clamp(startYear, 1, 9999);
+        int month = Mathf.Clamp(startMonth, 1, 12);
+        int day = Mathf.Clamp(startDay, 1, DateTime.DaysInMonth(year, month));
+        return new DateTime(year, month, day);
+    }
+}
+
+[Serializable]
+public sealed class LocationVisitRecord
+{
+    [SerializeField] private LocationId location;
+    [SerializeField, Min(0)] private int count;
+
+    public LocationId Location => location;
+    public int Count => count;
+
+    public LocationVisitRecord(LocationId locationId)
+    {
+        location = locationId;
+    }
+
+    public void Increment()
+    {
+        count++;
     }
 }
