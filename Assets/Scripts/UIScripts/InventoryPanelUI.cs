@@ -11,6 +11,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
     [SerializeField] private Button closeButton;
 
     private readonly List<InventorySlotUI> slots = new();
+    private readonly List<Button> boundCloseButtons = new();
     private GameState gameState;
 
     public bool IsOpen => gameObject.activeSelf;
@@ -25,23 +26,24 @@ public sealed class InventoryPanelUI : MonoBehaviour
         BuildSlots();
         Refresh();
 
-        if (closeButton != null)
-        {
-            closeButton.onClick.RemoveListener(Hide);
-            closeButton.onClick.AddListener(Hide);
-        }
+        BindCloseButton();
     }
 
     private void OnDestroy()
     {
-        if (closeButton != null)
+        for (int i = 0; i < boundCloseButtons.Count; i++)
         {
-            closeButton.onClick.RemoveListener(Hide);
+            if (boundCloseButtons[i] != null)
+            {
+                boundCloseButtons[i].onClick.RemoveListener(Hide);
+            }
         }
     }
 
     private void OnEnable()
     {
+        BindCloseButton();
+
         if (gameState != null)
         {
             gameState.OnInventoryChanged += Refresh;
@@ -71,6 +73,25 @@ public sealed class InventoryPanelUI : MonoBehaviour
     public void Hide()
     {
         SetVisible(false);
+    }
+
+    private void BindCloseButton()
+    {
+        boundCloseButtons.Clear();
+        Button[] buttons = GetComponentsInChildren<Button>(true);
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (buttons[i].name != "CloseButton")
+            {
+                continue;
+            }
+
+            closeButton ??= buttons[i];
+            buttons[i].interactable = true;
+            buttons[i].onClick.RemoveListener(Hide);
+            buttons[i].onClick.AddListener(Hide);
+            boundCloseButtons.Add(buttons[i]);
+        }
     }
 
     public void MoveOrMerge(int sourceIndex, int targetIndex)

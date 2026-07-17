@@ -26,8 +26,10 @@ public sealed class AudioSettingsUI : MonoBehaviour
     [SerializeField] private Slider sfxSlider;
     [SerializeField] private Slider voicesSlider;
 
-    private void Awake()
+
+private void Awake()
     {
+        ConfigureSettingsLayout();
         ConfigureSlider(masterSlider);
         ConfigureSlider(musicSlider);
         ConfigureSlider(sfxSlider);
@@ -36,6 +38,97 @@ public sealed class AudioSettingsUI : MonoBehaviour
         LoadSettings();
         ApplyAllVolumes();
     }
+
+private void ConfigureSettingsLayout()
+    {
+        RectTransform settingsRoot = FindSettingsRoot();
+        if (settingsRoot == null)
+        {
+            return;
+        }
+
+        LayoutSlider(masterSlider, settingsRoot, new Vector2(245f, 104f));
+        LayoutSlider(musicSlider, settingsRoot, new Vector2(245f, 24f));
+        LayoutSlider(sfxSlider, settingsRoot, new Vector2(245f, -56f));
+        LayoutSlider(voicesSlider, settingsRoot, new Vector2(245f, -136f));
+    }
+
+    private RectTransform FindSettingsRoot()
+    {
+        Slider source = masterSlider != null ? masterSlider : musicSlider;
+        Transform current = source != null ? source.transform : null;
+        while (current != null)
+        {
+            if (current.name == "SettingsContainer")
+            {
+                return current as RectTransform;
+            }
+
+            current = current.parent;
+        }
+
+        return null;
+    }
+
+private static void LayoutSlider(Slider slider, RectTransform settingsRoot, Vector2 position)
+    {
+        if (slider == null)
+        {
+            return;
+        }
+
+        RectTransform rect = slider.GetComponent<RectTransform>();
+        rect.SetParent(settingsRoot, false);
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = position;
+        rect.sizeDelta = new Vector2(360f, 24f);
+        rect.localScale = Vector3.one;
+        rect.localRotation = Quaternion.identity;
+        rect.localPosition = new Vector3(rect.localPosition.x, rect.localPosition.y, 0f);
+        slider.gameObject.SetActive(true);
+
+        TMPro.TMP_Text[] nestedLabels = slider.GetComponentsInChildren<TMPro.TMP_Text>(true);
+        foreach (TMPro.TMP_Text nestedLabel in nestedLabels)
+        {
+            if (nestedLabel.name.StartsWith("AudioLabel_"))
+            {
+                nestedLabel.gameObject.SetActive(false);
+            }
+        }
+
+        RectTransform background = slider.transform.Find("Background") as RectTransform;
+        if (background != null)
+        {
+            background.anchorMin = new Vector2(0f, 0.5f);
+            background.anchorMax = new Vector2(1f, 0.5f);
+            background.anchoredPosition = Vector2.zero;
+            background.sizeDelta = new Vector2(-20f, 8f);
+        }
+
+        if (slider.fillRect != null && slider.fillRect.parent is RectTransform fillArea)
+        {
+            fillArea.anchorMin = new Vector2(0f, 0.5f);
+            fillArea.anchorMax = new Vector2(1f, 0.5f);
+            fillArea.anchoredPosition = Vector2.zero;
+            fillArea.sizeDelta = new Vector2(-28f, 8f);
+            slider.fillRect.anchorMin = Vector2.zero;
+            slider.fillRect.anchorMax = Vector2.one;
+            slider.fillRect.offsetMin = Vector2.zero;
+            slider.fillRect.offsetMax = Vector2.zero;
+        }
+
+        if (slider.handleRect != null && slider.handleRect.parent is RectTransform handleArea)
+        {
+            handleArea.anchorMin = Vector2.zero;
+            handleArea.anchorMax = Vector2.one;
+            handleArea.offsetMin = new Vector2(12f, 0f);
+            handleArea.offsetMax = new Vector2(-12f, 0f);
+            slider.handleRect.sizeDelta = new Vector2(18f, 18f);
+        }
+    }
+
 
     private void OnEnable()
     {
@@ -159,8 +252,8 @@ public sealed class AudioSettingsUI : MonoBehaviour
         if (audioMixerForGame == null)
         {
             Debug.LogWarning(
-                $"AudioSettingsUI: AudioMixer не назначен. " +
-                $"Параметр {parameterName} не изменён.");
+                $"AudioSettingsUI: AudioMixer пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. " +
+                $"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ {parameterName} пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.");
             return;
         }
 
@@ -173,8 +266,8 @@ public sealed class AudioSettingsUI : MonoBehaviour
         if (!audioMixerForGame.SetFloat(parameterName, decibels))
         {
             Debug.LogWarning(
-                $"AudioSettingsUI: параметр \"{parameterName}\" " +
-                $"не найден среди Exposed Parameters AudioMixer.");
+                $"AudioSettingsUI: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ \"{parameterName}\" " +
+                $"пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Exposed Parameters AudioMixer.");
         }
     }
 

@@ -106,9 +106,9 @@ public static class HanseaticUIRestyler
         {
             SetRect(main, Vector2.one * 0.5f, Vector2.one * 0.5f, new Vector2(0f, -30f), new Vector2(430f, 330f), Vector2.one * 0.5f);
             StylePanel(main.gameObject, Surface, Gold, true);
-            StyleButton(FindDeep(main, "PlayButton"), "ИГРАТЬ", 74f);
-            StyleButton(FindDeep(main, "SettingsButton"), "НАСТРОЙКИ", 0f);
-            StyleButton(FindDeep(main, "QuitButton"), "ВЫХОД", -74f);
+            StyleButton(FindDeep(main, "PlayButton"), "ИГРАТЬ", 76f, 270f, 64f);
+            StyleButton(FindDeep(main, "SettingsButton"), "НАСТРОЙКИ", 0f, 270f, 64f);
+            StyleButton(FindDeep(main, "QuitButton"), "ВЫХОД", -76f, 270f, 64f);
         }
 
         RectTransform settings = FindRect(canvas.transform, "SettingsContainer");
@@ -228,17 +228,30 @@ public static class HanseaticUIRestyler
         row.raycastTarget = false;
         Transform oldBackground = FindDeep(carrier, "ToggleContainerBG");
         if (oldBackground != null) oldBackground.gameObject.SetActive(false);
-        TMP_Text text = toggle.GetComponentInChildren<TMP_Text>(true);
-        if (text != null)
+        TMP_Text oldText = toggle.GetComponentInChildren<TMP_Text>(true);
+        if (oldText != null)
         {
-            text.text = caption;
-            StyleText(text, 16f, Ivory, TextAlignmentOptions.MidlineLeft, FontStyles.Normal);
-            SetRect(text.rectTransform, Vector2.zero, Vector2.one, new Vector2(18f, 0f), new Vector2(-76f, 0f), new Vector2(0.5f, 0.5f));
+            oldText.gameObject.SetActive(false);
+        }
+        foreach (Text legacyText in toggle.GetComponentsInChildren<Text>(true))
+        {
+            legacyText.gameObject.SetActive(false);
+        }
+
+        TMP_Text label = EnsureText(carrier, "SettingLabel", caption, 16f, Ivory);
+        SetRect(label.rectTransform, Vector2.zero, Vector2.one, new Vector2(18f, 0f), new Vector2(-76f, 0f), Vector2.one * 0.5f);
+        label.alignment = TextAlignmentOptions.MidlineLeft;
+
+        if (toggle.targetGraphic != null)
+        {
+            RectTransform background = toggle.targetGraphic.rectTransform;
+            SetRect(background, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-27f, 0f), new Vector2(26f, 26f), Vector2.one * 0.5f);
+            toggle.targetGraphic.color = new Color(0.2f, 0.17f, 0.13f, 1f);
         }
         if (toggle.graphic != null)
         {
             RectTransform check = toggle.graphic.rectTransform;
-            SetRect(check, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-27f, 0f), new Vector2(24f, 24f), Vector2.one * 0.5f);
+            Stretch(check, 3f);
             check.GetComponent<Image>().color = GoldBright;
         }
     }
@@ -246,6 +259,13 @@ public static class HanseaticUIRestyler
     private static void LayoutSlider(RectTransform parent, Slider slider, string caption, Vector2 position)
     {
         if (slider == null) return;
+        foreach (TMP_Text nestedLabel in slider.GetComponentsInChildren<TMP_Text>(true))
+        {
+            if (nestedLabel.transform != slider.transform && nestedLabel.name.StartsWith("AudioLabel_", StringComparison.Ordinal))
+            {
+                UnityEngine.Object.DestroyImmediate(nestedLabel.gameObject);
+            }
+        }
         RectTransform carrier = slider.transform.parent as RectTransform;
         if (carrier == null) carrier = slider.GetComponent<RectTransform>();
         carrier.SetParent(parent, false);
@@ -259,9 +279,36 @@ public static class HanseaticUIRestyler
         if (oldLabel != null) oldLabel.gameObject.SetActive(false);
         if (slider.fillRect != null && slider.fillRect.GetComponent<Image>() is Image fill) fill.color = Gold;
         if (slider.handleRect != null && slider.handleRect.GetComponent<Image>() is Image handle) handle.color = GoldBright;
+        NormalizeSliderGeometry(slider);
         TMP_Text label = EnsureText(carrier, "AudioLabel_" + caption, caption, 15f, Muted);
         SetRect(label.rectTransform, new Vector2(0f, 1f), Vector2.one, new Vector2(0f, -2f), new Vector2(0f, 24f), new Vector2(0.5f, 1f));
         label.alignment = TextAlignmentOptions.MidlineLeft;
+    }
+
+    private static void NormalizeSliderGeometry(Slider slider)
+    {
+        RectTransform sliderRect = slider.GetComponent<RectTransform>();
+        SetRect(sliderRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0f, 4f), new Vector2(0f, 24f), new Vector2(0.5f, 0f));
+
+        Transform background = FindDeep(sliderRect, "Background");
+        if (background is RectTransform backgroundRect)
+        {
+            SetRect(backgroundRect, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), Vector2.zero, new Vector2(-20f, 8f), Vector2.one * 0.5f);
+            if (background.GetComponent<Image>() is Image image) image.color = new Color(0.19f, 0.16f, 0.13f, 1f);
+        }
+
+        if (slider.fillRect != null && slider.fillRect.parent is RectTransform fillArea)
+        {
+            SetRect(fillArea, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), Vector2.zero, new Vector2(-28f, 8f), Vector2.one * 0.5f);
+            Stretch(slider.fillRect, 0f);
+        }
+
+        if (slider.handleRect != null && slider.handleRect.parent is RectTransform handleArea)
+        {
+            SetRect(handleArea, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(-24f, 0f), Vector2.one * 0.5f);
+            slider.handleRect.sizeDelta = new Vector2(18f, 18f);
+            slider.handleRect.localPosition = new Vector3(slider.handleRect.localPosition.x, slider.handleRect.localPosition.y, 0f);
+        }
     }
 
     private static void StyleMapScene(Scene scene)
@@ -502,15 +549,20 @@ public static class HanseaticUIRestyler
             if (item != null)
             {
                 SetRect(item, Vector2.one * 0.5f, Vector2.one * 0.5f, new Vector2(-105f, y), new Vector2(590f, 70f), Vector2.one * 0.5f);
-                Image row = EnsureComponent<Image>(item.gameObject);
-                if (row != null)
-                {
-                    row.color = i % 2 == 0 ? SurfaceRaised : SurfaceSoft;
-                    row.raycastTarget = false;
-                }
-                TMP_Text rowText = item.GetComponentInChildren<TMP_Text>(true);
+                Image row = EnsureImage(panel, "MarketRow_" + i, i % 2 == 0 ? SurfaceRaised : SurfaceSoft);
+                SetRect(row.rectTransform, Vector2.one * 0.5f, Vector2.one * 0.5f, new Vector2(-105f, y), new Vector2(590f, 70f), Vector2.one * 0.5f);
+                row.raycastTarget = false;
+                row.transform.SetSiblingIndex(Mathf.Max(0, item.GetSiblingIndex()));
+
+                TMP_Text rowText = item.GetComponent<TMP_Text>();
                 StyleText(rowText, 16f, Ivory, TextAlignmentOptions.MidlineLeft, FontStyles.Normal);
-                if (rowText != null) SetRect(rowText.rectTransform, Vector2.zero, Vector2.one, new Vector2(18f, 0f), new Vector2(-36f, 0f), Vector2.one * 0.5f);
+                if (rowText != null)
+                {
+                    rowText.margin = new Vector4(18f, 0f, 18f, 0f);
+                    rowText.enableWordWrapping = false;
+                    rowText.overflowMode = TextOverflowModes.Ellipsis;
+                    item.SetAsLastSibling();
+                }
             }
             RectTransform buy = FindRect(panel, "Buy_" + i);
             RectTransform sell = FindRect(panel, "Sell_" + i);
@@ -634,6 +686,7 @@ public static class HanseaticUIRestyler
             SetRect(rect, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(xs[i], 56f), new Vector2(260f, 56f), new Vector2(0.5f, 0f));
             string caption = buttons[i].GetComponentInChildren<TMP_Text>(true)?.text ?? "";
             StyleButtonVisual(buttons[i].gameObject, caption, 18f);
+            MakeButtonRectangular(buttons[i].transform);
             rect.SetAsLastSibling();
         }
     }
@@ -681,11 +734,24 @@ public static class HanseaticUIRestyler
         EnsureComponent<GraphicRaycaster>(canvas.gameObject);
     }
 
-    private static void StyleButton(Transform transform, string caption, float y, float width = 330f)
+    private static void StyleButton(Transform transform, string caption, float y, float width = 330f, float height = 58f)
     {
         if (transform is not RectTransform rect) return;
-        SetRect(rect, Vector2.one * 0.5f, Vector2.one * 0.5f, new Vector2(0f, y), new Vector2(width, 58f), Vector2.one * 0.5f);
+        SetRect(rect, Vector2.one * 0.5f, Vector2.one * 0.5f, new Vector2(0f, y), new Vector2(width, height), Vector2.one * 0.5f);
         StyleButtonVisual(rect.gameObject, caption, 20f);
+        if (rect.parent != null && (rect.parent.name == "MainContainer" || rect.parent.name == "SettingsContainer"))
+        {
+            MakeButtonRectangular(rect);
+        }
+    }
+
+    private static void MakeButtonRectangular(Transform transform)
+    {
+        if (transform == null || transform.GetComponent<Image>() is not Image image) return;
+        image.sprite = null;
+        image.type = Image.Type.Simple;
+        image.preserveAspect = false;
+        EditorUtility.SetDirty(image);
     }
 
     private static void StyleButtonVisual(GameObject target, string caption, float fontSize)
@@ -693,23 +759,31 @@ public static class HanseaticUIRestyler
         Image image = EnsureComponent<Image>(target);
         image.color = SurfaceRaised;
         image.type = Image.Type.Simple;
+        image.raycastTarget = true;
+
+        Image surface = EnsureImage(target.transform, "ButtonSurface", Color.clear);
+        Stretch(surface.rectTransform, 0f);
+        surface.raycastTarget = false;
+        surface.transform.SetAsFirstSibling();
+        AddOutline(surface.gameObject, new Color(Gold.r, Gold.g, Gold.b, 0.78f), new Vector2(1f, -1f));
+
         Button button = EnsureComponent<Button>(target);
         button.targetGraphic = image;
+        button.transition = Selectable.Transition.ColorTint;
         ColorBlock colors = button.colors;
         colors.normalColor = SurfaceRaised;
-        colors.normalColor = Color.white;
         colors.highlightedColor = new Color(1f, 0.9f, 0.72f, 1f);
         colors.pressedColor = new Color(0.82f, 0.66f, 0.42f, 1f);
         colors.selectedColor = colors.highlightedColor;
         colors.disabledColor = new Color(0.16f, 0.15f, 0.14f, 0.72f);
         colors.colorMultiplier = 1f;
         button.colors = colors;
-        AddOutline(target, new Color(Gold.r, Gold.g, Gold.b, 0.78f), new Vector2(1f, -1f));
-
+        EditorUtility.SetDirty(image);
+        EditorUtility.SetDirty(button);
         Image accent = EnsureImage(target.transform, "AccentLine", GoldBright);
         SetRect(accent.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(4f, -8f), new Vector2(0f, 0.5f));
         accent.raycastTarget = false;
-        accent.transform.SetAsFirstSibling();
+        accent.transform.SetSiblingIndex(Mathf.Min(1, target.transform.childCount - 1));
 
         TMP_Text text = target.GetComponentInChildren<TMP_Text>(true);
         if (text != null)
