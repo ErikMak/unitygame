@@ -1,0 +1,41 @@
+#menu { position:absolute; left:0px; top:0px; width:1920px; height:1080px;  }
+#settings { position:absolute; left:0px; top:0px; width:1920px; height:1080px;  }
+#ship { position:absolute; left:155px; top:79px; width:1779px; height:1001px;  }
+#menu-ink { position:absolute; left:0px; top:-13px; width:1900px; height:1069px;  }
+#logo { position:absolute; left:159px; top:79px; width:577px; height:261px;  }
+#settings-ink { position:absolute; left:0px; top:-13px; width:1900px; height:1069px;  }
+#settings-decoration { position:absolute; left:1305px; top:342px; width:627px; height:752px; opacity:0.59; }
+#continue { position:absolute; left:108px; top:438px; width:679px; height:116px; font-size:64px; background-color:rgba(0,0,0,0); }
+#new-game { position:absolute; left:108px; top:572px; width:679px; height:116px; font-size:64px; background-color:rgba(0,0,0,0); }
+#settings-button { position:absolute; left:108px; top:706px; width:679px; height:116px; font-size:64px; background-color:rgba(0,0,0,0); }
+#quit { position:absolute; left:108px; top:840px; width:679px; height:116px; font-size:64px; background-color:rgba(0,0,0,0); }
+#fade { position:absolute; left:0px; top:0px; width:1920px; height:1080px; background-color:black; opacity:0; display:none; }
+#save { position:absolute; left:684px; top:907px; width:532px; height:94px; border-width:4px; border-color:#fad88b; border-radius:36px; font-size:36px; }
+#caption0 { position:absolute; left:150px; top:76px; width:610px; height:82px; font-size:54px; -unity-text-align:middle-left; }
+#volume0 { position:absolute; left:783px; top:76px; width:829px; height:72px;  }
+#value0 { position:absolute; left:1645px; top:76px; width:166px; height:82px; font-size:54px; color:#9999a2; }
+#caption1 { position:absolute; left:150px; top:190px; width:610px; height:82px; font-size:54px; -unity-text-align:middle-left; }
+#volume1 { position:absolute; left:783px; top:190px; width:829px; height:72px;  }
+#value1 { position:absolute; left:1645px; top:190px; width:166px; height:82px; font-size:54px; color:#9999a2; }
+#caption2 { position:absolute; left:150px; top:306px; width:610px; height:82px; font-size:54px; -unity-text-align:middle-left; }
+#volume2 { position:absolute; left:783px; top:306px; width:829px; height:72px;  }
+#value2 { position:absolute; left:1645px; top:306px; width:166px; height:82px; font-size:54px; color:#9999a2; }
+#caption3 { position:absolute; left:150px; top:420px; width:610px; height:82px; font-size:54px; -unity-text-align:middle-left; }
+#prev3 { position:absolute; left:760px; top:420px; width:89px; height:82px; font-size:64px; background-color:rgba(0,0,0,0); color:#fad88b; }
+#value3 { position:absolute; left:850px; top:420px; width:660px; height:82px; font-size:54px; color:#9999a2; }
+#next3 { position:absolute; left:1551px; top:420px; width:89px; height:82px; font-size:64px; background-color:rgba(0,0,0,0); color:#fad88b; }
+#caption4 { position:absolute; left:150px; top:539px; width:610px; height:82px; font-size:54px; -unity-text-align:middle-left; }
+#prev4 { position:absolute; left:760px; top:539px; width:89px; height:82px; font-size:64px; background-color:rgba(0,0,0,0); color:#fad88b; }
+#value4 { position:absolute; left:850px; top:539px; width:660px; height:82px; font-size:54px; color:#9999a2; }
+#next4 { position:absolute; left:1551px; top:539px; width:89px; height:82px; font-size:64px; background-color:rgba(0,0,0,0); color:#fad88b; }
+#caption5 { position:absolute; left:150px; top:644px; width:610px; height:82px; font-size:54px; -unity-text-align:middle-left; }
+#prev5 { position:absolute; left:760px; top:644px; width:89px; height:82px; font-size:64px; background-color:rgba(0,0,0,0); color:#fad88b; }
+#value5 { position:absolute; left:850px; top:644px; width:660px; height:82px; font-size:54px; color:#9999a2; }
+#next5 { position:absolute; left:1551px; top:644px; width:89px; height:82px; font-size:64px; background-color:rgba(0,0,0,0); color:#fad88b; }
+#caption6 { position:absolute; left:150px; top:771px; width:610px; height:82px; font-size:54px; -unity-text-align:middle-left; }
+#prev6 { position:absolute; left:760px; top:771px; width:89px; height:82px; font-size:64px; background-color:rgba(0,0,0,0); color:#fad88b; }
+#value6 { position:absolute; left:850px; top:771px; width:660px; height:82px; font-size:54px; color:#9999a2; }
+#next6 { position:absolute; left:1551px; top:771px; width:89px; height:82px; font-size:64px; background-color:rgba(0,0,0,0); color:#fad88b; }
+#menu Button { --unity-metrics-single_line-height: 1; }
+.unity-base-slider__tracker { background-color:#fad88b; height:5px; border-width:0; }
+.unity-base-slider__dragger { width:60px; height:60px; margin-top:-27px; border-width:0; background-color:rgba(0,0,0,0); }

@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+  <ui:VisualElement name="frame" >
+    <ui:VisualElement name="deck" picking-mode="Ignore" /><ui:VisualElement name="matte-top" picking-mode="Ignore" /><ui:VisualElement name="matte-bottom" picking-mode="Ignore" /><ui:VisualElement name="board" picking-mode="Ignore" /><ui:VisualElement name="details" picking-mode="Ignore" /><ui:VisualElement name="border-left" picking-mode="Ignore" /><ui:VisualElement name="border-right" picking-mode="Ignore" />
+    <ui:Label name="title" text="" picking-mode="Ignore" /><ui:Label name="description" text="" picking-mode="Ignore" /><ui:VisualElement name="slots" />
+    <ui:Button name="close" text="Закрыть инвентарь" class="outlined-action"><ui:VisualElement name="close-left" picking-mode="Ignore" /><ui:VisualElement name="close-right" picking-mode="Ignore" /></ui:Button><ui:VisualElement name="drag-ghost" picking-mode="Ignore" />
+  </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,33 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+  <ui:VisualElement name="frame" >
+  <ui:VisualElement name="intro" >
+  <ui:VisualElement name="intro-back" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="event-image" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="intro-left" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="intro-right" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="intro-banner" picking-mode="Ignore"></ui:VisualElement>
+  <ui:Label name="intro-text" text="" picking-mode="Ignore"></ui:Label>
+  <ui:VisualElement name="intro-line" picking-mode="Ignore"></ui:VisualElement>
+  <ui:Button name="accept"><ui:VisualElement name="accept-icon" picking-mode="Ignore" /></ui:Button>
+  </ui:VisualElement>  <ui:VisualElement name="choices" >
+  <ui:VisualElement name="choice-back" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="choice-left" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="choice-right" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="choice-banner" picking-mode="Ignore"></ui:VisualElement>
+  <ui:Label name="choice-text" text="" picking-mode="Ignore"></ui:Label>
+  <ui:VisualElement name="choice-line" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="portrait" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="dialog-panel" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="cinema-top" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="cinema-bottom" picking-mode="Ignore"></ui:VisualElement>
+  <ui:Label name="speaker" text="" picking-mode="Ignore"></ui:Label>
+  <ui:Label name="dialog-text" text="" picking-mode="Ignore"></ui:Label>
+  <ui:VisualElement name="answers" ></ui:VisualElement>
+  </ui:VisualElement>  <ui:VisualElement name="result" >
+  <ui:VisualElement name="result-panel" picking-mode="Ignore"></ui:VisualElement>
+  <ui:Label name="result-text" text="" picking-mode="Ignore"></ui:Label>
+  <ui:VisualElement name="result-line" picking-mode="Ignore"></ui:VisualElement>
+  <ui:Button name="finish" text="Закрыть и продолжить" class="outlined-action"><ui:VisualElement name="finish-left" picking-mode="Ignore" /><ui:VisualElement name="finish-right" picking-mode="Ignore" /></ui:Button>
+  </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>

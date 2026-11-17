@@ -15,6 +15,7 @@ MonoBehaviour:
   id: salt
   displayName: "\u0421\u043E\u043B\u044C"
   icon: {fileID: 21300000, guid: 54fdcaac1be16db498ea87480c65053f, type: 3}
+  description: Соль помогает сохранять рыбу и мясо в пути. Её перевозят в мешках.
   maxStack: 5
   novgorodBuyPrice: 10
   novgorodSellPrice: 8

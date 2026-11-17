@@ -19,7 +19,7 @@ MonoBehaviour:
     \u0432\u0435\u0442\u0435\u0440. \u041D\u0443\u0436\u043D\u043E \u0432\u044B\u0431\u0440\u0430\u0442\u044C,
     \u043A\u0430\u043A \u0432\u0435\u0441\u0442\u0438 \u043B\u0430\u0434\u044C\u044E
     \u0434\u0430\u043B\u044C\u0448\u0435."
-  illustration: {fileID: 21300000, guid: 9e04bd81ecdd4f649ba721333c7a6e6d, type: 3}
+  illustration: {fileID: 0}
   choices:
   - choiceId: wait
     buttonText: "\u041F\u0435\u0440\u0435\u0436\u0434\u0430\u0442\u044C \u0443 \u0431\u0435\u0440\u0435\u0433\u0430"

@@ -1,58 +1,39 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using UnityEngine.UIElements;
+using static HanseaticDocument;
 
 public sealed class JourneyEndingController : MonoBehaviour
 {
-    [SerializeField] private TMP_Text resultTitleText;
-    [SerializeField] private TMP_Text narrativeText;
-    [SerializeField] private TMP_Text startingGoldValueText;
-    [SerializeField] private TMP_Text finalGoldValueText;
-    [SerializeField] private TMP_Text daysValueText;
-    [SerializeField] private TMP_Text routeValueText;
-    [SerializeField] private TMP_Text locationValueText;
-    [SerializeField] private Button restartButton;
-    [SerializeField] private Button mainMenuButton;
-    [SerializeField] private Button quitButton;
     [SerializeField] private string mainMenuSceneName = "MainMenu";
     [SerializeField] private string mapSceneName = "MapScene";
+    private HanseaticDocument document;
 
     private void Start()
     {
-        WireButton(restartButton, RestartGame);
-        WireButton(mainMenuButton, ReturnToMainMenu);
-        WireButton(quitButton, QuitGame);
+        document = new HanseaticDocument(transform, "ServicePanel", 20);
+        VisualElement root = document.Root;
+        Show(root.Q("body"), false);
+        VisualElement actions = root.Q("actions");
+        actions.Add(ServiceAction("Новая игра", RestartGame));
+        actions.Add(ServiceAction("Главное меню", ReturnToMainMenu));
+        actions.Add(ServiceAction("Выйти", QuitGame));
         DisplayEnding();
     }
 
+    private void OnDestroy() => document?.Dispose();
+
     public void DisplayEnding()
     {
+        if (document == null) return;
         GameState state = GameState.Instance;
-        if (state == null || !state.IsNewGameInitialized)
-        {
-            SetText(resultTitleText, "Нет данных о путешествии");
-            SetText(narrativeText, "Финальная сцена открыта без активного игрового состояния.");
-            return;
-        }
-
-        bool success = state.IsGameFinished &&
-                       state.Gold >= state.RequiredGoldForSuccess &&
-                       state.DaysElapsed <= state.MaximumDaysForSuccess;
-
-        SetText(resultTitleText, success ? "Путешествие завершено" : "Путешествие окончено");
-        SetText(narrativeText, success
-            ? "Ладья вернулась к Балтике в срок и с достаточной выручкой."
-            : "Ладья вернулась к Балтике, но условия торгового поручения выполнены не полностью.");
-        SetText(startingGoldValueText, state.StartingGold.ToString());
-        SetText(finalGoldValueText, state.Gold.ToString());
-        SetText(daysValueText, state.DaysElapsed.ToString());
-        SetText(routeValueText, $"{state.CurrentJourneyStepIndex + 1} / {state.Route?.Steps?.Count ?? 0}");
-        SetText(locationValueText, state.CurrentLocation.ToString());
+        bool available = state != null && state.IsNewGameInitialized;
+        bool success = available && state.IsGameFinished && state.Gold >= state.RequiredGoldForSuccess &&
+            state.DaysElapsed <= state.MaximumDaysForSuccess;
+        document.Root.Q<Label>("title").text = success ? "Путешествие завершено" : "Путешествие окончено";
+        document.Root.Q<Label>("summary").text = available
+            ? $"Золото: {state.StartingGold} → {state.Gold}\nДней в пути: {state.DaysElapsed}"
+            : "Нет данных о путешествии.";
     }
 
     public void RestartGame()
@@ -61,36 +42,14 @@ public sealed class JourneyEndingController : MonoBehaviour
         SceneManager.LoadScene(mapSceneName);
     }
 
-    public void ReturnToMainMenu()
-    {
-        SceneManager.LoadScene(mainMenuSceneName);
-    }
+    public void ReturnToMainMenu() => SceneManager.LoadScene(mainMenuSceneName);
 
     public void QuitGame()
     {
 #if UNITY_EDITOR
-        EditorApplication.isPlaying = false;
+        UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
-    }
-
-    private static void SetText(TMP_Text target, string value)
-    {
-        if (target != null)
-        {
-            target.text = value;
-        }
-    }
-
-    private static void WireButton(Button button, UnityEngine.Events.UnityAction action)
-    {
-        if (button == null)
-        {
-            return;
-        }
-
-        button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(action);
     }
 }

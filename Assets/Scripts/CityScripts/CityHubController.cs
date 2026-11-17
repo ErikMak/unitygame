@@ -1,32 +1,33 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public sealed class CityHubController : MonoBehaviour
 {
     [SerializeField] private string mapSceneName = "MapScene";
     [SerializeField] private List<CityDefinition> cityDefinitions = new();
-    [SerializeField] private TMP_Text cityNameText;
-    [SerializeField] private TMP_Text dateText;
-    [SerializeField] private TMP_Text statusText;
-    [SerializeField] private Button germanCourtButton;
-    [SerializeField] private Button marketButton;
-    [SerializeField] private Button churchButton;
-    [SerializeField] private Button portButton;
-    [SerializeField] private Button inventoryButton;
-    [SerializeField] private Button leaveCityButton;
+    private Button cityNameText;
+    private Label dateText;
+    private Label statusText;
+    private Button germanCourtButton;
+    private Button marketButton;
+    private Button churchButton;
+    private Button portButton;
+    private Button inventoryButton;
+    private Button leaveCityButton;
     [SerializeField] private GameObject marketPanel;
     [SerializeField] private InventoryPanelUI inventoryPanel;
     [SerializeField] private EventController eventController;
 
     private GameState gameState;
+    private HanseaticHudView hud;
     private CityDefinition city;
     private bool isLoadingScene;
 
     private void Start()
     {
+        BuildHud();
         gameState = GameState.Instance;
         if (!ValidateEntry())
         {
@@ -42,6 +43,7 @@ public sealed class CityHubController : MonoBehaviour
             return;
         }
 
+        BuildCityWorld();
         WireButtons();
         SetButtonsInteractable(true);
         RefreshHeader();
@@ -60,10 +62,10 @@ public sealed class CityHubController : MonoBehaviour
         bool dragging = inventoryPanel != null && inventoryPanel.IsDragging;
         if (inventoryButton != null)
         {
-            inventoryButton.interactable = !eventOpen && !marketOpen;
+            inventoryButton.SetEnabled(!eventOpen && !marketOpen);
         }
 
-        leaveCityButton.interactable = !eventOpen && !marketOpen && !dragging;
+        leaveCityButton.SetEnabled(!eventOpen && !marketOpen && !dragging);
         SetSightButtonsInteractable(!eventOpen && !marketOpen);
     }
 
@@ -75,7 +77,7 @@ public sealed class CityHubController : MonoBehaviour
         }
 
         isLoadingScene = true;
-        leaveCityButton.interactable = false;
+        leaveCityButton.SetEnabled(false);
         ClosePanels();
 
         if (!gameState.TryCompleteCurrentLocationStep())
@@ -162,25 +164,70 @@ public sealed class CityHubController : MonoBehaviour
         return gameState.Inventory != null;
     }
 
-    private void WireButtons()
+    private void BuildCityWorld()
     {
-        Wire(germanCourtButton, OpenGermanCourt);
-        Wire(marketButton, OpenMarket);
-        Wire(churchButton, OpenChurch);
-        Wire(portButton, OpenInventory);
-        Wire(inventoryButton, OpenInventory);
-        Wire(leaveCityButton, LeaveCity);
+        Camera camera = Camera.main;
+        if (city.WorldModel == null || camera == null)
+            return;
+
+        GameObject model = Instantiate(city.WorldModel, Vector3.zero, Quaternion.identity);
+        model.name = city.DisplayName;
+        Renderer[] renderers = model.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0)
+            return;
+
+        Bounds bounds = renderers[0].bounds;
+        foreach (Renderer renderer in renderers)
+            bounds.Encapsulate(renderer.bounds);
+
+        float extent = Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z);
+        Vector3 direction = new Vector3(1, 1.08f, -1.4f).normalized;
+        Vector3 target = bounds.center;
+        camera.transform.SetPositionAndRotation(target + direction * extent * 2.8f, Quaternion.LookRotation(-direction));
+        camera.orthographic = true;
+        camera.orthographicSize = extent * 0.68f;
+        camera.nearClipPlane = Mathf.Max(0.01f, extent * 0.01f);
+        camera.farClipPlane = Mathf.Max(10, extent * 8);
+        camera.clearFlags = CameraClearFlags.SolidColor;
+        camera.backgroundColor = new Color(0.16f, 0.21f, 0.24f);
     }
 
-    private static void Wire(Button button, UnityEngine.Events.UnityAction action)
+    private void BuildHud()
     {
-        if (button == null)
+        foreach (GameObject root in gameObject.scene.GetRootGameObjects())
         {
-            return;
+            Transform canvas = root.name == "Canvas" ? root.transform : root.transform.Find("Canvas");
+            Transform sights = canvas != null ? canvas.Find("CitySightsContainer") : null;
+            if (sights != null) sights.gameObject.SetActive(false);
+            foreach (Transform node in canvas != null ? canvas : root.transform)
+            {
+                if (node.name is "CityNameText" or "DateText" or "CityStatusText")
+                    node.gameObject.SetActive(false);
+            }
         }
 
-        button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(action);
+        hud = new HanseaticHudView(transform, city: true);
+        cityNameText = hud.Location;
+        dateText = hud.Time;
+        statusText = hud.Status;
+        germanCourtButton = hud.CityAction("Немецкий двор");
+        marketButton = hud.CityAction("Рынок");
+        churchButton = hud.CityAction("Церковь");
+        portButton = hud.CityAction("Порт");
+        inventoryButton = hud.Inventory;
+        leaveCityButton = hud.Leave;
+    }
+
+    private void OnDestroy() => hud?.Dispose();
+
+    private void WireButtons()
+    {
+        germanCourtButton.clicked += OpenGermanCourt;
+        marketButton.clicked += OpenMarket;
+        churchButton.clicked += OpenChurch;
+        portButton.clicked += OpenInventory;
+        inventoryButton.clicked += OpenInventory;
+        leaveCityButton.clicked += LeaveCity;
     }
 
     private void OpenCityEvent(EventDefinition definition)
@@ -241,15 +288,15 @@ public sealed class CityHubController : MonoBehaviour
     private void SetButtonsInteractable(bool value)
     {
         SetSightButtonsInteractable(value);
-        if (inventoryButton != null) inventoryButton.interactable = value;
-        if (leaveCityButton != null) leaveCityButton.interactable = value;
+        if (inventoryButton != null) inventoryButton.SetEnabled(value);
+        if (leaveCityButton != null) leaveCityButton.SetEnabled(value);
     }
 
     private void SetSightButtonsInteractable(bool value)
     {
-        if (germanCourtButton != null) germanCourtButton.interactable = value;
-        if (marketButton != null) marketButton.interactable = value;
-        if (churchButton != null) churchButton.interactable = value;
-        if (portButton != null) portButton.interactable = value;
+        if (germanCourtButton != null) germanCourtButton.SetEnabled(value);
+        if (marketButton != null) marketButton.SetEnabled(value);
+        if (churchButton != null) churchButton.SetEnabled(value);
+        if (portButton != null) portButton.SetEnabled(value);
     }
 }

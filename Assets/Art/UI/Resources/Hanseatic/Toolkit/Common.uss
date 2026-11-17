@@ -1,0 +1,10 @@
+.hanseatic-root { flex-grow:1; align-items:center; justify-content:center; background-color:#141318; color:white; }
+#frame { width:1920px; height:1080px; flex-shrink:0; overflow:hidden; }
+Label, Button { margin:0; padding:0; -unity-text-align:middle-center; white-space:normal; }
+Button { background-color:rgba(20,19,24,0.94); border-width:0; color:white; font-size:32px; }
+Button:hover, Button:focus { color:#fad88b; }
+Button:disabled { color:#898994; }
+.outlined-action { padding:0 24px; border-width:4px; border-color:#de6140; border-radius:36px; overflow:visible; background-color:#141318; }
+.outlined-action > VisualElement { position:absolute; width:20px; height:32px; top:50%; margin-top:-16px; }
+.outlined-action > .finial-left { left:-14px; }
+.outlined-action > .finial-right { right:-14px; }

@@ -1,171 +1,69 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using UnityEngine.UIElements;
 
 public class CustomSceneManager : MonoBehaviour
 {
-    [Header("Main Menu Containers")]
     [SerializeField] private GameObject mainContainer;
     [SerializeField] private GameObject settingsContainer;
+    [SerializeField, Min(0.01f)] private float fadeDuration = 0.6f;
 
-    [Header("Scene Transition")]
-    [SerializeField] private CanvasGroup fadeCanvasGroup;
-
-    [SerializeField, Min(0.01f)]
-    private float fadeDuration = 0.6f;
-
-    private bool isSceneTransitionRunning;
+    private HanseaticDocument document;
+    private HanseaticMenuView view;
+    private bool loading;
 
     private void Awake()
     {
-        ShowMainMenu();
-        ResetFadeOverlay();
-    }
-
-    private void ResetFadeOverlay()
-    {
-        if (fadeCanvasGroup == null)
-            return;
-
-        fadeCanvasGroup.alpha = 0f;
-        fadeCanvasGroup.interactable = false;
-        fadeCanvasGroup.blocksRaycasts = false;
-    }
-    /// <summary>
-    /// Открывает меню настроек.
-    /// </summary>
-    public void ShowSettings()
-    {
-        SetContainerState(
-            showMainContainer: false,
-            showSettingsContainer: true);
-    }
-
-    /// <summary>
-    /// Закрывает настройки и возвращает главное меню.
-    /// </summary>
-    public void ShowMainMenu()
-    {
-        SetContainerState(
-            showMainContainer: true,
-            showSettingsContainer: false);
-    }
-
-    private void SetContainerState(
-        bool showMainContainer,
-        bool showSettingsContainer)
-    {
-        if (mainContainer != null)
-        {
-            mainContainer.SetActive(showMainContainer);
-        }
-        else
-        {
-            Debug.LogWarning(
-                "SceneManager: MainContainer не назначен в Inspector.");
-        }
-
+        // Existing settings components still read values from serialized controls during migration.
+        Transform legacyCanvas = mainContainer != null ? mainContainer.transform.parent : null;
+        if (legacyCanvas != null)
+            legacyCanvas.gameObject.SetActive(false);
         if (settingsContainer != null)
-        {
-            settingsContainer.SetActive(showSettingsContainer);
-        }
-        else
-        {
-            Debug.LogWarning(
-                "SceneManager: SettingsContainer не назначен в Inspector.");
-        }
+            settingsContainer.SetActive(false);
+
+        document = new HanseaticDocument(transform, "MainMenu", 0);
+        view = new HanseaticMenuView(document.Root, this,
+            FindAnyObjectByType<GraphicsSettingsUI>(FindObjectsInactive.Include),
+            FindAnyObjectByType<AudioSettingsUI>(FindObjectsInactive.Include));
+        ShowMainMenu();
     }
+
+    private void OnDestroy() => document?.Dispose();
+    public void ShowSettings() => view?.SetPage(true);
+    public void ShowMainMenu() => view?.SetPage(false);
+    public void LoadMapScene() => LoadSceneWithFade("MapScene");
 
     public void LoadSceneWithFade(string sceneName)
     {
-        if (isSceneTransitionRunning)
+        if (loading || string.IsNullOrWhiteSpace(sceneName))
             return;
-
-        if (string.IsNullOrWhiteSpace(sceneName))
-        {
-            Debug.LogError(
-                "SceneManager: имя загружаемой сцены не указано.");
-            return;
-        }
-
-        StartCoroutine(FadeAndLoadScene(sceneName));
+        loading = true;
+        StartCoroutine(FadeAndLoad(sceneName));
     }
 
-    private IEnumerator FadeAndLoadScene(string sceneName)
+    private IEnumerator FadeAndLoad(string sceneName)
     {
-        isSceneTransitionRunning = true;
-
-        if (fadeCanvasGroup == null)
+        VisualElement fade = view.Fade;
+        document.Root.Q("menu").SetEnabled(false);
+        document.Root.Q("settings").SetEnabled(false);
+        HanseaticDocument.Show(fade, true);
+        for (float elapsed = 0f; elapsed < fadeDuration; elapsed += Time.unscaledDeltaTime)
         {
-            Debug.LogWarning(
-                "SceneManager: Fade Canvas Group не назначен. " +
-                "Сцена будет загружена без затемнения.");
-
-            yield return LoadSceneAsync(sceneName);
-            yield break;
-        }
-
-        fadeCanvasGroup.gameObject.SetActive(true);
-        fadeCanvasGroup.interactable = true;
-        fadeCanvasGroup.blocksRaycasts = true;
-
-        float elapsedTime = 0f;
-        float startAlpha = fadeCanvasGroup.alpha;
-
-        while (elapsedTime < fadeDuration)
-        {
-            elapsedTime += Time.unscaledDeltaTime;
-
-            float progress = Mathf.Clamp01(
-                elapsedTime / fadeDuration);
-
-            fadeCanvasGroup.alpha = Mathf.Lerp(
-                startAlpha,
-                1f,
-                progress);
-
+            fade.style.opacity = Mathf.Clamp01(elapsed / fadeDuration);
             yield return null;
         }
 
-        fadeCanvasGroup.alpha = 1f;
-
-        yield return LoadSceneAsync(sceneName);
-    }
-
-    private IEnumerator LoadSceneAsync(string sceneName)
-    {
-        AsyncOperation loadingOperation =
-            SceneManager.LoadSceneAsync(sceneName);
-
-        if (loadingOperation == null)
-        {
-            Debug.LogError(
-                $"SceneManager: не удалось начать загрузку " +
-                $"сцены \"{sceneName}\".");
-
-            isSceneTransitionRunning = false;
-            yield break;
-        }
-
-        while (!loadingOperation.isDone)
-            yield return null;
+        fade.style.opacity = 1f;
+        yield return SceneManager.LoadSceneAsync(sceneName);
     }
 
     public void QuitGame()
     {
 #if UNITY_EDITOR
-        EditorApplication.isPlaying = false;
+        UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
-    }
-
-    public void LoadMapScene()
-    {
-       SceneManager.LoadScene("MapScene");
     }
 }

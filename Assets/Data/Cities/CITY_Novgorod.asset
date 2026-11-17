@@ -17,3 +17,4 @@ MonoBehaviour:
   firstVisitEvent: {fileID: 11400000, guid: 2179f0fe8016d5e4aa118dc0d6140a90, type: 2}
   returnVisitEvent: {fileID: 11400000, guid: ec01750893383d94a85808b8f7c17353, type: 2}
   churchEvent: {fileID: 11400000, guid: 8a196b790a72e414c86a2e704deb98fc, type: 2}
+  worldModel: {fileID: 919132149155446097, guid: eb7ce1afbe021254ebf663f1466d7b97, type: 3}

@@ -9,6 +9,9 @@ public sealed class CityDefinition : ScriptableObject
     [SerializeField] private EventDefinition returnVisitEvent;
     [SerializeField] private EventDefinition churchEvent;
 
+    [SerializeField] private GameObject worldModel;
+
+    public GameObject WorldModel => worldModel;
     public LocationId Location => location;
     public string DisplayName => displayName;
     public EventDefinition FirstVisitEvent => firstVisitEvent;

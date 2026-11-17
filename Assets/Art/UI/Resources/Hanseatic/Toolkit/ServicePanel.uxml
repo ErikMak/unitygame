@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+  <ui:VisualElement name="frame">
+    <ui:VisualElement name="card">
+      <ui:Label name="title" />
+      <ui:Label name="summary" />
+      <ui:ScrollView name="body" />
+      <ui:VisualElement name="actions" />
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>

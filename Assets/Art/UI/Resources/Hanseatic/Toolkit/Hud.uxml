@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+  <ui:VisualElement name="frame" picking-mode="Ignore">
+    <ui:VisualElement name="time" class="hud-tile" picking-mode="Ignore"><ui:Label name="time-value" text="" picking-mode="Ignore" /><ui:VisualElement name="time-icon-tile" picking-mode="Ignore" /><ui:VisualElement name="sun-icon" picking-mode="Ignore" /></ui:VisualElement>
+    <ui:Button name="relations" class="hud-tile icon-button"><ui:VisualElement name="relations-icon" picking-mode="Ignore" /></ui:Button><ui:Button name="inventory" class="hud-tile icon-button"><ui:VisualElement name="inventory-icon" picking-mode="Ignore" /></ui:Button><ui:Button name="leave" class="hud-tile icon-button"><ui:VisualElement name="leave-icon" picking-mode="Ignore" /></ui:Button><ui:Button name="menu" class="hud-tile icon-button"><ui:VisualElement name="menu-icon" picking-mode="Ignore" /></ui:Button>
+    <ui:Button name="location" class="hud-tile" />
+    <ui:VisualElement name="details" class="hud-tile">
+      <ui:Label name="summary" text="" picking-mode="Ignore" /><ui:Label name="status" text="" picking-mode="Ignore" />
+      <ui:VisualElement name="city-actions" />
+    </ui:VisualElement>
+    <ui:VisualElement name="confirm">
+      <ui:VisualElement name="dialog-box" class="hud-tile">
+        <ui:Label name="message" text="Вернуться в главное меню? Текущее путешествие завершится." picking-mode="Ignore" />
+        <ui:Button name="cancel" text="Отмена" class="outlined-action"><ui:VisualElement name="cancel-left" picking-mode="Ignore" /><ui:VisualElement name="cancel-right" picking-mode="Ignore" /></ui:Button><ui:Button name="quit" text="В главное меню" class="outlined-action"><ui:VisualElement name="quit-left" picking-mode="Ignore" /><ui:VisualElement name="quit-right" picking-mode="Ignore" /></ui:Button>
+      </ui:VisualElement>
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>

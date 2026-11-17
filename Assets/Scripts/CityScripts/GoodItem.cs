@@ -6,6 +6,7 @@ public sealed class GoodItem : ScriptableObject
     [SerializeField] private string id;
     [SerializeField] private string displayName;
     [SerializeField] private Sprite icon;
+    [SerializeField, TextArea] private string description;
     [SerializeField, Min(1)] private int maxStack = 5;
     [SerializeField, Min(0)] private int novgorodBuyPrice;
     [SerializeField, Min(0)] private int novgorodSellPrice;
@@ -14,6 +15,7 @@ public sealed class GoodItem : ScriptableObject
 
     public string Id { get => id; set => id = value; }
     public string DisplayName { get => displayName; set => displayName = value; }
+    public string Description => description;
     public Sprite Icon { get => icon; set => icon = value; }
     public int MaxStack { get => maxStack; set => maxStack = Mathf.Max(1, value); }
     public int NovgorodBuyPrice { get => novgorodBuyPrice; set => novgorodBuyPrice = Mathf.Max(0, value); }

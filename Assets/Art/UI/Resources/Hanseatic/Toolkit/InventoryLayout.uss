@@ -1,0 +1,16 @@
+#deck { position:absolute; left:0px; top:0px; width:1920px; height:1080px;  }
+#matte-top { position:absolute; left:0px; top:0px; width:1920px; height:100px; background-color:black; }
+#matte-bottom { position:absolute; left:0px; top:980px; width:1920px; height:100px; background-color:black; }
+#board { position:absolute; left:730px; top:138px; width:1150px; height:719px;  }
+#details { position:absolute; left:91px; top:236px; width:595px; height:570px; background-color:rgba(20,19,24,0.9); }
+#border-left { position:absolute; left:106px; top:251px; width:2px; height:540px; background-color:#d9d9d9; }
+#border-right { position:absolute; left:669px; top:251px; width:2px; height:540px; background-color:#d9d9d9; }
+#title { position:absolute; left:119px; top:265px; width:539px; height:102px; font-size:44px; }
+#description { position:absolute; left:132px; top:376px; width:511px; height:379px; font-size:35px; }
+#slots { position:absolute; left:866px; top:244px; width:858px; height:496px;  }
+#close { position:absolute; left:1039px; top:857px; width:532px; height:94px; font-size:36px; }
+#drag-ghost { position:absolute; left:0px; top:0px; width:80px; height:80px; display:none; opacity:0.8; }
+.cargo-slot { position:absolute; background-color:rgba(20,19,24,0.06); border-width:3px; border-color:rgba(0,0,0,0); align-items:center; justify-content:center; }
+.cargo-slot.selected, .cargo-slot:focus { border-color:#de6140; }
+.cargo-icon { width:68%; height:68%; -unity-background-scale-mode:scale-to-fit; }
+.cargo-quantity { position:absolute; bottom:4px; right:6px; color:#141318; font-size:24px; }

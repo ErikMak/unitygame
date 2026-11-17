@@ -1,32 +1,28 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public sealed class GameHUD : MonoBehaviour
 {
-    [SerializeField] private TMP_Text goldValue;
-    [SerializeField] private TMP_Text daysValue;
-    [SerializeField] private TMP_Text journeyStatusText;
-    [SerializeField] private Image journeyProgressFill;
-    [SerializeField] private TMP_Text goalValue;
-    [SerializeField] private TMP_Text cargoValue;
-    [SerializeField] private Button inventoryButton;
     [SerializeField] private InventoryPanelUI inventoryPanel;
     [SerializeField] private EventController eventController;
 
     private GameState gameState;
+    private HanseaticHudView hud;
 
     private void Awake()
     {
         gameState = GameState.Instance != null ? GameState.Instance : FindAnyObjectByType<GameState>();
         eventController ??= FindAnyObjectByType<EventController>();
 
-        if (inventoryButton != null)
-        {
-            inventoryButton.onClick.RemoveAllListeners();
-            inventoryButton.onClick.AddListener(ToggleInventory);
-        }
+        Transform oldBar = transform.Find("TopBar");
+        if (oldBar != null)
+            oldBar.gameObject.SetActive(false);
+        if (gameObject.scene.name != "MapScene")
+            return;
+
+        hud = new HanseaticHudView(transform, city: false);
+        hud.Inventory.clicked += ToggleInventory;
 
         if (inventoryPanel != null)
         {
@@ -34,26 +30,35 @@ public sealed class GameHUD : MonoBehaviour
         }
     }
 
+    private void OnDestroy() => hud?.Dispose();
+
     private void OnEnable()
     {
+        if (hud == null)
+            return;
+
         Subscribe();
         RefreshAll();
     }
 
     private void OnDisable()
     {
-        Unsubscribe();
+        if (hud != null)
+            Unsubscribe();
     }
 
     private void Update()
     {
+        if (hud == null)
+            return;
+
         Keyboard keyboard = Keyboard.current;
         if (keyboard == null)
         {
             return;
         }
 
-        if (keyboard.iKey.wasPressedThisFrame && !IsEventOpen())
+        if (keyboard.iKey.wasPressedThisFrame && !IsEventOpen() && !hud.IsMenuOpen)
         {
             ToggleInventory();
         }
@@ -73,10 +78,9 @@ public sealed class GameHUD : MonoBehaviour
 
         gameState.OnGoldChanged += HandleGoldChanged;
         gameState.OnDaysChanged += HandleDaysChanged;
-        gameState.OnInventoryChanged += RefreshCargo;
+        gameState.OnInventoryChanged += RefreshSummary;
         gameState.OnLocationChanged += HandleLocationChanged;
         gameState.OnJourneyStepChanged += HandleJourneyStepChanged;
-        gameState.OnJourneyProgressChanged += RefreshProgress;
     }
 
     private void Unsubscribe()
@@ -88,98 +92,40 @@ public sealed class GameHUD : MonoBehaviour
 
         gameState.OnGoldChanged -= HandleGoldChanged;
         gameState.OnDaysChanged -= HandleDaysChanged;
-        gameState.OnInventoryChanged -= RefreshCargo;
+        gameState.OnInventoryChanged -= RefreshSummary;
         gameState.OnLocationChanged -= HandleLocationChanged;
         gameState.OnJourneyStepChanged -= HandleJourneyStepChanged;
-        gameState.OnJourneyProgressChanged -= RefreshProgress;
     }
 
     public void RefreshAll()
     {
-        RefreshGold();
-        RefreshDays();
-        RefreshGoal();
-        RefreshCargo();
         RefreshJourney();
-        RefreshProgress(gameState != null && gameState.CurrentJourneyStep?.StepType == JourneyStepType.Travel ? 0f : 1f);
+        RefreshSummary();
     }
 
-    private void RefreshGold()
-    {
-        if (goldValue != null && gameState != null)
-        {
-            goldValue.text = $"Золото: {gameState.Gold}";
-        }
-    }
+    private void HandleGoldChanged(int value) => RefreshSummary();
+    private void HandleDaysChanged(int value) => RefreshSummary();
+    private void HandleLocationChanged(LocationId location) => RefreshJourney();
+    private void HandleJourneyStepChanged(int index, JourneyStep step) => RefreshJourney();
 
-    private void HandleGoldChanged(int value)
+    private void RefreshSummary()
     {
-        RefreshGold();
-    }
-
-    private void HandleDaysChanged(int value)
-    {
-        RefreshDays();
-    }
-
-    private void HandleLocationChanged(LocationId location)
-    {
-        RefreshJourney();
-    }
-
-    private void HandleJourneyStepChanged(int index, JourneyStep step)
-    {
-        RefreshJourney();
-    }
-
-    private void RefreshDays()
-    {
-        if (daysValue != null && gameState != null)
-        {
-            daysValue.text = $"День: {gameState.DaysElapsed} / {gameState.MaximumDaysForSuccess}";
-        }
-    }
-
-    private void RefreshGoal()
-    {
-        if (goalValue != null && gameState != null)
-        {
-            goalValue.text = $"Цель: {gameState.RequiredGoldForSuccess} золота";
-        }
-    }
-
-    private void RefreshCargo()
-    {
-        if (cargoValue != null && gameState != null)
-        {
-            cargoValue.text = $"Груз: {gameState.GetOccupiedSlotCount()} / {gameState.InventorySlotCount}";
-        }
+        if (hud == null || gameState == null) return;
+        hud.Time.text = $"День {gameState.DaysElapsed} из {gameState.MaximumDaysForSuccess}";
+        hud.Summary.text = $"Золото: {gameState.Gold}\nГруз: {gameState.GetOccupiedSlotCount()} / {gameState.InventorySlotCount}\nЦель: {gameState.RequiredGoldForSuccess} золота";
     }
 
     private void RefreshJourney()
     {
-        if (journeyStatusText == null || gameState == null || gameState.CurrentJourneyStep == null)
+        JourneyStep step = gameState != null ? gameState.CurrentJourneyStep : null;
+        if (hud == null || step == null) return;
+        hud.Location.text = step.StepType switch
         {
-            return;
-        }
-
-        JourneyStep step = gameState.CurrentJourneyStep;
-        journeyStatusText.text = step.StepType switch
-        {
-            JourneyStepType.Travel => $"{GetLocationName(step.StartPoint)} -> {GetLocationName(step.EndPoint)}",
-            JourneyStepType.Event => $"Событие: {step.DisplayName}",
-            JourneyStepType.Location => $"Локация: {GetLocationName(step.DestinationLocation)}",
+            JourneyStepType.Travel => $"{GetLocationName(step.StartPoint)} → {GetLocationName(step.EndPoint)}",
+            JourneyStepType.Location => GetLocationName(step.DestinationLocation),
             JourneyStepType.Ending => "Возвращение к Балтике",
             _ => step.DisplayName
         };
-    }
-
-    private void RefreshProgress(float progress)
-    {
-        if (journeyProgressFill != null)
-        {
-            journeyProgressFill.fillAmount = Mathf.Clamp01(progress);
-        }
     }
 
     private void ToggleInventory()

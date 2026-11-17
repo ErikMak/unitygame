@@ -15,6 +15,7 @@ MonoBehaviour:
   id: fur
   displayName: "\u041F\u0443\u0448\u043D\u0438\u043D\u0430"
   icon: {fileID: 21300000, guid: 204fed1dfab6e434d9eb74ed7c0cafa1, type: 3}
+  description: Выделанные шкуры для тёплой одежды. Мех хранят сухим и перевозят связками.
   maxStack: 5
   novgorodBuyPrice: 42
   novgorodSellPrice: 34

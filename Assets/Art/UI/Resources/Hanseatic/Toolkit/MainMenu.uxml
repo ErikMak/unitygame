@@ -1,0 +1,42 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+  <ui:VisualElement name="frame" >
+  <ui:VisualElement name="menu" >
+  <ui:VisualElement name="ship" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="menu-ink" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="logo" picking-mode="Ignore"></ui:VisualElement>
+  <ui:Button name="continue" text="Продолжить"></ui:Button>
+  <ui:Button name="new-game" text="Новая игра"></ui:Button>
+  <ui:Button name="settings-button" text="Настройки"></ui:Button>
+  <ui:Button name="quit" text="Выйти"></ui:Button>
+  </ui:VisualElement>  <ui:VisualElement name="settings" >
+  <ui:VisualElement name="settings-ink" picking-mode="Ignore"></ui:VisualElement>
+  <ui:VisualElement name="settings-decoration" picking-mode="Ignore"></ui:VisualElement>
+  <ui:Label name="caption0" text="Общая громкость" picking-mode="Ignore"></ui:Label>
+  <ui:Label name="caption1" text="Громкость музыки" picking-mode="Ignore"></ui:Label>
+  <ui:Label name="caption2" text="Громкость звуков" picking-mode="Ignore"></ui:Label>
+  <ui:Label name="caption3" text="Качество графики" picking-mode="Ignore"></ui:Label>
+  <ui:Label name="caption4" text="Разрешение экрана" picking-mode="Ignore"></ui:Label>
+  <ui:Label name="caption5" text="V-Sync" picking-mode="Ignore"></ui:Label>
+  <ui:Label name="caption6" text="Режим экрана" picking-mode="Ignore"></ui:Label>
+  <ui:SliderInt name="volume0" low-value="0" high-value="100"></ui:SliderInt>
+  <ui:Label name="value0" text="" picking-mode="Ignore"></ui:Label>
+  <ui:SliderInt name="volume1" low-value="0" high-value="100"></ui:SliderInt>
+  <ui:Label name="value1" text="" picking-mode="Ignore"></ui:Label>
+  <ui:SliderInt name="volume2" low-value="0" high-value="100"></ui:SliderInt>
+  <ui:Label name="value2" text="" picking-mode="Ignore"></ui:Label>
+  <ui:Button name="prev3" text="‹"></ui:Button>
+  <ui:Label name="value3" text="" picking-mode="Ignore"></ui:Label>
+  <ui:Button name="next3" text="›"></ui:Button>
+  <ui:Button name="prev4" text="‹"></ui:Button>
+  <ui:Label name="value4" text="" picking-mode="Ignore"></ui:Label>
+  <ui:Button name="next4" text="›"></ui:Button>
+  <ui:Button name="prev5" text="‹"></ui:Button>
+  <ui:Label name="value5" text="" picking-mode="Ignore"></ui:Label>
+  <ui:Button name="next5" text="›"></ui:Button>
+  <ui:Button name="prev6" text="‹"></ui:Button>
+  <ui:Label name="value6" text="" picking-mode="Ignore"></ui:Label>
+  <ui:Button name="next6" text="›"></ui:Button>
+  <ui:Button name="save" text="Сохранить и закрыть" class="outlined-action"><ui:VisualElement name="save-left" picking-mode="Ignore" /><ui:VisualElement name="save-right" picking-mode="Ignore" /></ui:Button>
+  </ui:VisualElement>
+  </ui:VisualElement>  <ui:VisualElement name="fade" picking-mode="Ignore"></ui:VisualElement>
+</ui:UXML>

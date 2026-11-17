@@ -17,3 +17,4 @@ MonoBehaviour:
   firstVisitEvent: {fileID: 0}
   returnVisitEvent: {fileID: 0}
   churchEvent: {fileID: 0}
+  worldModel: {fileID: 919132149155446097, guid: 093470f71a72b9645b36e05f93c72dc9, type: 3}

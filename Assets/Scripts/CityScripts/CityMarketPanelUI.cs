@@ -1,99 +1,76 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using static HanseaticDocument;
 
 public sealed class CityMarketPanelUI : MonoBehaviour
 {
     [SerializeField] private MarketController marketController;
     [SerializeField] private GoodItem[] goods;
-    [SerializeField] private Button[] buyButtons;
-    [SerializeField] private Button[] sellButtons;
-    [SerializeField] private TMP_Text[] itemTexts;
-    [SerializeField] private TMP_Text feedbackText;
 
-    private GameState gameState;
-
-    private void Awake()
-    {
-        gameState = GameState.Instance;
-        if (marketController != null && gameState != null)
-        {
-            marketController.SetLocation(gameState.CurrentLocation);
-        }
-
-        WireButtons();
-    }
+    private HanseaticDocument document;
+    private GameState state;
+    private Label summary;
+    private Label[] rows;
 
     private void OnEnable()
     {
+        state = GameState.Instance != null ? GameState.Instance : FindAnyObjectByType<GameState>();
+        if (marketController != null && state != null)
+            marketController.SetLocation(state.CurrentLocation);
+        if (document == null) Build();
         Refresh();
     }
 
-    private void WireButtons()
+    private void OnDisable()
     {
+        document?.Dispose();
+        document = null;
+    }
+
+    private void Build()
+    {
+        foreach (Transform child in transform) child.gameObject.SetActive(false);
+        document = new HanseaticDocument(transform, "ServicePanel", 60);
+        VisualElement root = document.Root;
+        root.Q<Label>("title").text = "Рынок";
+        summary = root.Q<Label>("summary");
+        VisualElement body = root.Q<ScrollView>("body").contentContainer;
+        rows = new Label[goods.Length];
         for (int i = 0; i < goods.Length; i++)
         {
-            int index = i;
-            if (i < buyButtons.Length && buyButtons[i] != null)
-            {
-                buyButtons[i].onClick.RemoveAllListeners();
-                buyButtons[i].onClick.AddListener(() => Buy(index));
-            }
-
-            if (i < sellButtons.Length && sellButtons[i] != null)
-            {
-                sellButtons[i].onClick.RemoveAllListeners();
-                sellButtons[i].onClick.AddListener(() => Sell(index));
-            }
+            GoodItem item = goods[i];
+            if (item == null) continue;
+            VisualElement row = new();
+            row.AddToClassList("service-row");
+            rows[i] = new Label();
+            row.Add(rows[i]);
+            row.Add(ServiceAction("Купить", () => Trade(item, true)));
+            row.Add(ServiceAction("Продать", () => Trade(item, false)));
+            body.Add(row);
         }
+
+        Button close = ServiceAction("Закрыть рынок", () => gameObject.SetActive(false));
+        root.Q("actions").Add(close);
+        close.schedule.Execute(() => close.Focus());
     }
 
-    private void Buy(int index)
+    private void Trade(GoodItem item, bool buy)
     {
-        GoodItem item = GetGood(index);
-        bool success = item != null && marketController != null && marketController.TryBuy(item);
-        SetFeedback(success ? $"Куплено: {item.DisplayName}" : "Покупка невозможна: проверьте золото и свободные слоты.");
+        if (marketController == null) return;
+        bool ok = buy ? marketController.TryBuy(item) : marketController.TrySell(item);
         Refresh();
-    }
-
-    private void Sell(int index)
-    {
-        GoodItem item = GetGood(index);
-        bool success = item != null && marketController != null && marketController.TrySell(item);
-        SetFeedback(success ? $"Продано: {item.DisplayName}" : "В грузе нет этого товара.");
-        Refresh();
+        summary.text += ok ? " · Сделка завершена" : " · Сделка недоступна";
     }
 
     private void Refresh()
     {
-        gameState ??= GameState.Instance;
-        if (gameState == null)
+        if (state == null) return;
+        summary.text = $"Золото: {state.Gold}";
+        for (int i = 0; i < rows.Length; i++)
         {
-            return;
-        }
-
-        for (int i = 0; i < goods.Length && i < itemTexts.Length; i++)
-        {
+            if (rows[i] == null) continue;
             GoodItem item = goods[i];
-            if (item == null || itemTexts[i] == null)
-            {
-                continue;
-            }
-
-            itemTexts[i].text = $"{item.DisplayName}  Купить: {item.GetBuyPrice(gameState.CurrentLocation)}  Продать: {item.GetSellPrice(gameState.CurrentLocation)}  В грузе: {gameState.GetItemQuantity(item)}";
-        }
-    }
-
-    private GoodItem GetGood(int index)
-    {
-        return index >= 0 && index < goods.Length ? goods[index] : null;
-    }
-
-    private void SetFeedback(string text)
-    {
-        if (feedbackText != null)
-        {
-            feedbackText.text = text;
+            rows[i].text = $"{item.DisplayName}   {item.GetBuyPrice(state.CurrentLocation)} / {item.GetSellPrice(state.CurrentLocation)}   В грузе: {state.GetItemQuantity(item)}";
         }
     }
 }

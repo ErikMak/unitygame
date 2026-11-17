@@ -7,10 +7,13 @@ public sealed class EventDefinition : ScriptableObject
     [SerializeField] private string eventId;
     [SerializeField] private string title;
     [SerializeField, TextArea(3, 8)] private string description;
+    [SerializeField] private string speakerName;
     [SerializeField] private Sprite illustration;
     [SerializeField] private List<EventChoice> choices = new();
     [SerializeField] private bool isOneShot = true;
     [SerializeField] private bool showResultAfterChoice = true;
+
+    public string SpeakerName => string.IsNullOrWhiteSpace(speakerName) ? title : speakerName;
 
     public string EventId
     {

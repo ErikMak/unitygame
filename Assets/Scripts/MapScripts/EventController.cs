@@ -61,7 +61,8 @@ public sealed class EventController : MonoBehaviour
         advanceJourneyOnClose = advanceJourney;
         standaloneCompleted = completed;
 
-        eventPopupUI.Open(eventDefinition, gameState, OnChoiceSelected, OnContinuePressed);
+        eventPopupUI.Open(eventDefinition, gameState, OnChoiceSelected, OnContinuePressed,
+            startWithDialogue: !advanceJourney);
     }
 
     public void SelectChoice(EventChoice choice)
