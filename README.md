@@ -1,3 +1,5 @@
+<img height="400" alt="превью" src="https://github.com/user-attachments/assets/a2fca6ef-0d97-4549-8c18-ccfac9c3d186" />
+
 # :sailboat: Ганзейский путь
 
 Одиночная образовательная историческая Narrative Adventure с элементами ролевой игры в сеттинге торгового путешествия по Северо-Западной части Руси и Балтики начала XV века.
@@ -33,6 +35,13 @@
 <a name="shots"></a>
 
 ### :camera: Скриншоты
+
+<img width="1252" height="790" alt="image" src="https://github.com/user-attachments/assets/9bf1fbfb-e3dd-48e5-96dd-1db6edb0bbd4" />
+
+<img width="1449" height="913" alt="image" src="https://github.com/user-attachments/assets/b8414aeb-df4a-4256-b615-a4c647ca5299" />
+
+<img width="1655" height="508" alt="image" src="https://github.com/user-attachments/assets/f211cb51-20a0-4a38-9cb2-7bde3727b213" />
+
 
 <a name="miro"></a>
 
